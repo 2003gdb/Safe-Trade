@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles for admin portal - SafeTrade Design System */
+body {
+  @apply font-sans antialiased;
+  color: #25283D; /* SafeTrade Dark */
+  background: linear-gradient(135deg, rgba(161, 205, 244, 0.1) 0%, rgba(249, 250, 251, 1) 100%);
+}
+
+/* Custom responsive utilities */
+@layer utilities {
+  .container-responsive {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .table-responsive {
+    @apply overflow-x-auto shadow ring-1 ring-black ring-opacity-5;
+  }
+
+  .card-responsive {
+    @apply bg-white/70 backdrop-blur-sm overflow-hidden shadow border border-safetrade-blue/30;
+  }
+
+  .btn-primary {
+    @apply bg-safetrade-orange hover:bg-safetrade-orange/90 text-white px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-safetrade-orange;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-100 hover:bg-gray-200 text-safetrade-dark px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500;
+  }
+}
+
+/* Component styles */
+@layer components {
+  .metric-card {
+    @apply bg-white/70 backdrop-blur-sm overflow-hidden shadow border border-safetrade-blue/30;
+  }
+
+  .form-input {
+    @apply block w-full border-safetrade-blue/30 shadow-sm focus:border-safetrade-orange focus:ring-safetrade-orange sm:text-sm;
+  }
+
+  .form-select {
+    @apply block w-full border-safetrade-blue/30 shadow-sm focus:border-safetrade-orange focus:ring-safetrade-orange sm:text-sm;
+  }
+
+  .status-badge {
+    @apply inline-flex px-2 py-1 text-xs font-semibold;
+  }
+}
+
+/* Mobile-first responsive breakpoints are handled by Tailwind's built-in classes */
+/* sm: 640px, md: 768px, lg: 1024px, xl: 1280px, 2xl: 1536px */
+
+/* Print styles for admin reports */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .card-responsive {
+    box-shadow: none !important;
+    border: 1px solid #A1CDF4 !important;
+  }
+}
