@@ -19,23 +19,12 @@ Cada package se instala y ejecuta de forma **completamente independiente**.
 
 ---
 
-## 📊 Configuración de Base de Datos MySQL
+## Configuración de Base de Datos MySQL
 
 ### Prerrequisitos
 - MySQL 8.0 o superior instalado y ejecutándose
 
-### 1. Instalar MySQL
-
-**macOS:**
-```bash
-brew install mysql@8.0
-brew services start mysql@8.0
-```
-
-**Windows:**
-Descargar e instalar desde [MySQL Downloads](https://dev.mysql.com/downloads/mysql/)
-
-### 2. Crear la Base de Datos
+### 1. Crear la Base de Datos
 
 Conectarse a MySQL:
 ```bash
@@ -119,7 +108,7 @@ CREATE TABLE reports (
 );
 ```
 
-### 3. Insertar Datos Iniciales de Catálogos
+### 2. Insertar Datos Iniciales de Catálogos
 
 ```sql
 -- Tipos de ataque
@@ -146,34 +135,7 @@ INSERT INTO status (name) VALUES
 ('cerrado');
 ```
 
-### 4. Crear Usuario para la Aplicación (Opcional pero recomendado)
-
-```sql
--- Crear usuario específico para SafeTrade
-CREATE USER 'safetrade_user'@'localhost' IDENTIFIED BY 'tu_password_seguro';
-
--- Otorgar permisos
-GRANT ALL PRIVILEGES ON safetrade_dev2.* TO 'safetrade_user'@'localhost';
-
--- Aplicar cambios
-FLUSH PRIVILEGES;
-```
-
-### 5. Verificar la Instalación
-
-```sql
--- Verificar tablas creadas
-SHOW TABLES;
-
--- Verificar datos de catálogos
-SELECT * FROM attack_types;
-SELECT * FROM impacts;
-SELECT * FROM status;
-```
-
----
-
-## 🔧 Package 1: Backend (NestJS API)
+## Backend (NestJS API)
 
 ### Ubicación
 ```
@@ -283,7 +245,7 @@ npm run lint
 
 ---
 
-## 💻 Package 2: Admin Portal (Next.js)
+## Admin Portal (Next.js)
 
 ### Ubicación
 ```
@@ -339,11 +301,6 @@ npm run dev                # Inicia en http://localhost:3001
 npm run build
 npm run start
 
-# Testing
-npm run test
-npm run test:watch
-npm run test:coverage
-
 # Linting y Type Checking
 npm run lint
 npm run type-check
@@ -358,7 +315,7 @@ npm run type-check
 
 ---
 
-## 📱 Package 3: Mobile (iOS SwiftUI)
+## Mobile (iOS SwiftUI)
 
 ### Ubicación
 ```
@@ -415,7 +372,7 @@ private let baseURL = "http://localhost:3000"  // Para simulador
 
 ---
 
-## 🚀 Orden de Inicio Recomendado
+## Orden de Inicio Recomendado
 
 Para ejecutar el proyecto completo:
 
@@ -432,14 +389,14 @@ npm install              # Solo la primera vez
 npm run dev              # Puerto 3000
 ```
 
-### 3. Admin Portal (Opcional)
+### 3. Admin Portal
 ```bash
 cd packages/admin-portal
 npm install              # Solo la primera vez
 npm run dev              # Puerto 3001
 ```
 
-### 4. Mobile App (Opcional)
+### 4. Mobile App
 ```bash
 cd packages/mobile/SafeTrade
 open SafeTrade.xcodeproj  # Abrir en Xcode
@@ -448,10 +405,10 @@ open SafeTrade.xcodeproj  # Abrir en Xcode
 
 ---
 
-## 🔒 Características de Seguridad
+## Características de Seguridad
 
 - **Privacidad de Reportes Anónimos:** Sin registro de información personal
-- **Autenticación Robusta:** JWT + bcrypt con salt único por usuario
+- **Autenticación Robusta:** JWT + crypto con salt único por usuario
 - **Separación de Administradores:** Tabla `admin_users` separada de `users`
 - **Validación de Archivos:** Verificación MIME type y límites de tamaño
 - **SQL Injection Prevention:** Queries parametrizadas con mysql2
@@ -527,12 +484,3 @@ SafeTrade-Proyecto/
 MIT License - Ver archivo [LICENSE](LICENSE) para detalles.
 
 ---
-
-## 📚 Documentación Adicional
-
-Para documentación técnica detallada, ver:
-- [Arquitectura del Sistema](docs/architecture/)
-- [Product Requirements](docs/prd/)
-- [User Stories](docs/stories/)
-- [API Endpoints](docs/API-ENDPOINTS.md)
-- [Database Schema](docs/architecture/database-schema.md)
