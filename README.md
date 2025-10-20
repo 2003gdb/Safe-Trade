@@ -11,8 +11,7 @@ SafeTrade-Proyecto/
 ├── packages/
 │   ├── backend/           # API NestJS (Puerto 3000)
 │   ├── admin-portal/      # Portal Next.js (Puerto 3001)
-│   └── mobile/            # App iOS SwiftUI
-└── docs/                  # Documentación del proyecto
+└── └── mobile/            # App iOS SwiftUI
 ```
 
 Cada package se instala y ejecuta de forma **completamente independiente**.
@@ -472,11 +471,8 @@ SafeTrade-Proyecto/
 │           │   ├── Services/      # API y servicios
 │           │   └── Utils/         # Utilidades
 │           └── SafeTrade.xcodeproj
-│
-└── docs/                      # Documentación
-    ├── architecture/          # Arquitectura del sistema
-    ├── prd/                   # Product Requirements
-    └── stories/               # User Stories
+
+
 ```
 
 ## 📄 Licencia
