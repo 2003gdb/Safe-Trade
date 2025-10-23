@@ -144,7 +144,7 @@ packages/backend/
 ### Stack Tecnológico
 - **Framework:** NestJS 10.2.0
 - **Base de datos:** MySQL 8.0+ (conexión directa con mysql2)
-- **Autenticación:** JWT + crypto
+- **Autenticación:** JWT + bcrypt
 - **Puerto:** 3000
 
 ### Instalación
@@ -314,7 +314,7 @@ npm run type-check
 
 ---
 
-## 📱 Package 3: Mobile (iOS SwiftUI)
+## Package 3: Mobile (iOS SwiftUI)
 
 ### Ubicación
 ```
@@ -371,7 +371,7 @@ private let baseURL = "http://localhost:3000"  // Para simulador
 
 ---
 
-## 🚀 Orden de Inicio Recomendado
+## Orden de Inicio Recomendado
 
 Para ejecutar el proyecto completo:
 
@@ -407,7 +407,7 @@ open SafeTrade.xcodeproj  # Abrir en Xcode
 ## Características de Seguridad
 
 - **Privacidad de Reportes Anónimos:** Sin registro de información personal
-- **Autenticación Robusta:** JWT + crypto con salt único por usuario
+- **Autenticación Robusta:** JWT + bcrypt (12 rounds)
 - **Separación de Administradores:** Tabla `admin_users` separada de `users`
 - **Validación de Archivos:** Verificación MIME type y límites de tamaño
 - **SQL Injection Prevention:** Queries parametrizadas con mysql2
@@ -478,7 +478,7 @@ SafeTrade-Proyecto/
     └── stories/               # User Stories
 ```
 
-## 📄 Licencia
+## Licencia
 
 MIT License - Ver archivo [LICENSE](LICENSE) para detalles.
 

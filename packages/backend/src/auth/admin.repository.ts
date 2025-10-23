@@ -1,6 +1,8 @@
+// Repositorio de administradores con bcrypt y queries parametrizadas
+
 import { Injectable } from "@nestjs/common";
 import { DbService } from "src/db/db.service";
-import { hashPassword, verifyPassword } from "src/util/hash/hash.util";
+import { generateSalt, hashPassword, verifyPassword } from "src/util/hash/hash.util";
 
 export type AdminUser = {
     id: number;
@@ -39,7 +41,8 @@ export class AdminRepository {
     }
 
 
-    async createAdmin(email: string, password: string, salt: string): Promise<AdminUser | null> {
+    async createAdmin(email: string, password: string): Promise<AdminUser | null> {
+        const salt = generateSalt();
         const hashedPassword = await hashPassword(password, salt);
         const sql = `INSERT INTO admin_users (email, pass_hash, salt) VALUES (?, ?, ?)`;
 
@@ -48,7 +51,6 @@ export class AdminRepository {
             const insertResult = result as { insertId: number };
             return this.findById(insertResult.insertId);
         } catch (error) {
-            // Email might already exist
             return null;
         }
     }

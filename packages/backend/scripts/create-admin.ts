@@ -1,37 +1,32 @@
 #!/usr/bin/env ts-node
 
-/**
- * Script interactivo para crear administradores en SafeTrade
- *
- * Uso: npx ts-node scripts/create-admin.ts
- */
+// Script para crear administradores con bcrypt
 
-import * as crypto from 'crypto';
+import * as bcrypt from 'bcrypt';
+import { randomBytes } from 'crypto';
 import * as mysql from 'mysql2/promise';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 import * as readline from 'readline';
 
-// Cargar variables de entorno
 dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
-// Funciones de hashing (aligned with hash.util.ts)
+const SALT_ROUNDS = 12;
+
 function generateSalt(): string {
-    return crypto.randomBytes(32).toString('hex');
+    return randomBytes(32).toString('hex');
 }
 
 async function hashPassword(password: string, salt: string): Promise<string> {
     const saltedPassword = password + salt;
-    return crypto.createHash('sha256').update(saltedPassword).digest('hex');
+    return bcrypt.hash(saltedPassword, SALT_ROUNDS);
 }
 
-// Validar email
 function isValidEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
 }
 
-// Crear interfaz de readline
 function createInterface() {
     return readline.createInterface({
         input: process.stdin,
@@ -39,7 +34,6 @@ function createInterface() {
     });
 }
 
-// Preguntar al usuario
 function question(rl: readline.Interface, query: string): Promise<string> {
     return new Promise((resolve) => {
         rl.question(query, resolve);
@@ -55,7 +49,6 @@ async function createAdmin() {
     let connection: mysql.Connection | null = null;
 
     try {
-        // Solicitar email
         let email = '';
         while (!email || !isValidEmail(email)) {
             email = await question(rl, '📧 Email del administrador: ');
@@ -65,7 +58,6 @@ async function createAdmin() {
             }
         }
 
-        // Solicitar contraseña
         let password = '';
         while (!password || password.length < 8) {
             password = await question(rl, '🔑 Contraseña (mínimo 8 caracteres): ');
@@ -75,7 +67,6 @@ async function createAdmin() {
             }
         }
 
-        // Confirmar contraseña
         const passwordConfirm = await question(rl, '🔑 Confirmar contraseña: ');
         if (password !== passwordConfirm) {
             console.log('\n❌ Las contraseñas no coinciden. Abortando.\n');
@@ -85,7 +76,6 @@ async function createAdmin() {
 
         console.log('\n🔌 Conectando a la base de datos...');
 
-        // Conectar a la base de datos
         connection = await mysql.createConnection({
             host: process.env.DB_HOST || 'localhost',
             port: parseInt(process.env.DB_PORT || '3306'),
@@ -96,7 +86,6 @@ async function createAdmin() {
 
         console.log('✅ Conectado a la base de datos\n');
 
-        // Verificar si el admin ya existe
         const [existingAdmin] = await connection.query(
             'SELECT id, email FROM admin_users WHERE email = ?',
             [email]
@@ -111,12 +100,10 @@ async function createAdmin() {
             return;
         }
 
-        // Generar salt y hash
         console.log('🔐 Generando credenciales seguras...');
         const salt = generateSalt();
         const passHash = await hashPassword(password, salt);
 
-        // Insertar administrador
         const [result] = await connection.query(
             'INSERT INTO admin_users (email, pass_hash, salt) VALUES (?, ?, ?)',
             [email, passHash, salt]
@@ -150,7 +137,6 @@ async function createAdmin() {
     }
 }
 
-// Ejecutar el script
 createAdmin()
     .then(() => {
         process.exit(0);

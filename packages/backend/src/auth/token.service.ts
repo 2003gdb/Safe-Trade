@@ -1,3 +1,4 @@
+// Servicio de tokens JWT - requiere JWT_SECRET configurado
 
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
@@ -61,7 +62,7 @@ export class TokenService {
 
     async verifyAccessToken(token: string): Promise<AccessPayload> {
         const payload = await this.jwtService.verifyAsync<AccessPayload>(token, {
-            secret: process.env.JWT_SECRET || "supersecret"
+            secret: EnvValidationService.getJwtSecret()
         });
 
         if (payload.type !== "access") {
@@ -72,7 +73,7 @@ export class TokenService {
 
     async verifyAdminToken(token: string): Promise<AdminPayload> {
         const payload = await this.jwtService.verifyAsync<AdminPayload>(token, {
-            secret: process.env.JWT_SECRET || "supersecret"
+            secret: EnvValidationService.getJwtSecret()
         });
 
         if (payload.type !== "admin") {
@@ -83,7 +84,7 @@ export class TokenService {
 
     async verifyRefreshToken(token: string): Promise<RefreshPayload> {
         const payload = await this.jwtService.verifyAsync<RefreshPayload>(token, {
-            secret: process.env.JWT_SECRET || "supersecret"
+            secret: EnvValidationService.getJwtSecret()
         });
 
         if (payload.type !== "refresh" && payload.type !== "admin") {

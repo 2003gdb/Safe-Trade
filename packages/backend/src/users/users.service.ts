@@ -1,3 +1,4 @@
+// Servicio de usuarios con bcrypt para autenticación segura
 
 import { Injectable } from "@nestjs/common";
 import { UsersRepository, User } from "./users.repository";
@@ -8,10 +9,8 @@ export class UsersService {
     constructor(private readonly usersRepository: UsersRepository) {}
 
     async createUser(email: string, name: string, password: string): Promise<User | null> {
-        // Generate unique salt for this user
         const salt = generateSalt();
         const hashed_password = await hashPassword(password, salt);
-
         return this.usersRepository.createUser(email, name, hashed_password, salt);
     }
 
@@ -34,11 +33,6 @@ export class UsersService {
         }
 
         const isValid = await verifyPassword(password, user.salt, user.pass_hash);
-
-        console.log(user);
-        console.log("Password : "+ password);
-        console.log("Password Hash : "+ user.pass_hash);
-
         return isValid ? user : null;
     }
 
@@ -52,14 +46,8 @@ export class UsersService {
 
 
     async changePassword(id: number, newPassword: string): Promise<boolean> {
-        // Generate new salt for the new password
         const salt = generateSalt();
         const hashed_password = await hashPassword(newPassword, salt);
-
         return this.usersRepository.updatePassword(id, hashed_password, salt);
     }
-}
-
-function sha256(password: string) {
-    throw new Error("Function not implemented.");
 }
