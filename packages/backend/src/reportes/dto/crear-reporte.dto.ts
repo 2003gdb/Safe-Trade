@@ -56,7 +56,7 @@ export class CrearReporteDto {
     @IsOptional()
     @ValidateIf((o) => o.suspicious_url && o.suspicious_url.length > 0)
     @IsString({ message: "La URL sospechosa debe ser una cadena válida" })
-    @Matches(/^.+\..+$/, { message: "La URL sospechosa debe contener al menos un dominio (ej: sitio.com)" })
+    @Matches(/^[^\s.]{1,255}\.[^\s]{1,1792}$/, { message: "La URL sospechosa debe contener al menos un dominio (ej: sitio.com)" })
     @MaxLength(2048, { message: "La URL no puede exceder 2048 caracteres" })
     suspicious_url?: string;
 

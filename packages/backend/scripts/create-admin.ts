@@ -23,7 +23,8 @@ async function hashPassword(password: string, salt: string): Promise<string> {
 }
 
 function isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // ReDoS-safe email validation: limits each part to prevent backtracking
+    const emailRegex = /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{1,63}$/;
     return emailRegex.test(email);
 }
 
