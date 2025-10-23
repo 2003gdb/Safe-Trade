@@ -11,8 +11,7 @@ SafeTrade-Proyecto/
 ├── packages/
 │   ├── backend/           # API NestJS (Puerto 3000)
 │   ├── admin-portal/      # Portal Next.js (Puerto 3001)
-│   └── mobile/            # App iOS SwiftUI
-└── docs/                  # Documentación del proyecto
+└── └── mobile/            # App iOS SwiftUI
 ```
 
 Cada package se instala y ejecuta de forma **completamente independiente**.
@@ -24,6 +23,7 @@ Cada package se instala y ejecuta de forma **completamente independiente**.
 ### Prerrequisitos
 - MySQL 8.0 o superior instalado y ejecutándose
 
+### 1. Crear la Base de Datos
 ### 1. Crear la Base de Datos
 
 Conectarse a MySQL:
@@ -134,7 +134,34 @@ INSERT INTO status (name) VALUES
 ('cerrado');
 ```
 
-## Package 1: Backend (NestJS API)
+### 4. Crear Usuario para la Aplicación (Opcional pero recomendado)
+
+```sql
+-- Crear usuario específico para SafeTrade
+CREATE USER 'safetrade_user'@'localhost' IDENTIFIED BY 'tu_password_seguro';
+
+-- Otorgar permisos
+GRANT ALL PRIVILEGES ON safetrade_dev2.* TO 'safetrade_user'@'localhost';
+
+-- Aplicar cambios
+FLUSH PRIVILEGES;
+```
+
+### 5. Verificar la Instalación
+
+```sql
+-- Verificar tablas creadas
+SHOW TABLES;
+
+-- Verificar datos de catálogos
+SELECT * FROM attack_types;
+SELECT * FROM impacts;
+SELECT * FROM status;
+```
+
+---
+
+## 🔧 Package 1: Backend (NestJS API)
 
 ### Ubicación
 ```
@@ -388,14 +415,14 @@ npm install              # Solo la primera vez
 npm run dev              # Puerto 3000
 ```
 
-### 3. Admin Portal (Opcional)
+### 3. Admin Portal
 ```bash
 cd packages/admin-portal
 npm install              # Solo la primera vez
 npm run dev              # Puerto 3001
 ```
 
-### 4. Mobile App (Opcional)
+### 4. Mobile App
 ```bash
 cd packages/mobile/SafeTrade
 open SafeTrade.xcodeproj  # Abrir en Xcode
@@ -407,7 +434,7 @@ open SafeTrade.xcodeproj  # Abrir en Xcode
 ## Características de Seguridad
 
 - **Privacidad de Reportes Anónimos:** Sin registro de información personal
-- **Autenticación Robusta:** JWT + bcrypt (12 rounds)
+- **Autenticación Robusta:** JWT + bcrypt con salt único por usuario
 - **Separación de Administradores:** Tabla `admin_users` separada de `users`
 - **Validación de Archivos:** Verificación MIME type y límites de tamaño
 - **SQL Injection Prevention:** Queries parametrizadas con mysql2
@@ -471,11 +498,8 @@ SafeTrade-Proyecto/
 │           │   ├── Services/      # API y servicios
 │           │   └── Utils/         # Utilidades
 │           └── SafeTrade.xcodeproj
-│
-└── docs/                      # Documentación
-    ├── architecture/          # Arquitectura del sistema
-    ├── prd/                   # Product Requirements
-    └── stories/               # User Stories
+
+
 ```
 
 ## Licencia
