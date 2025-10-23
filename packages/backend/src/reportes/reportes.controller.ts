@@ -248,24 +248,42 @@ export class ReportesController {
                 callback(null, uniqueName);
             }
         }),
+        limits: {
+            fileSize: 5 * 1024 * 1024, // 5MB max file size
+            files: 1 // Only one file per request
+        },
         fileFilter: (req, file, callback) => {
             // Accept images only
             const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/heic', 'image/heif'];
-            if (allowedMimeTypes.includes(file.mimetype)) {
+            const allowedExtensions = ['.jpg', '.jpeg', '.png', '.heic', '.heif'];
+            const fileExt = extname(file.originalname).toLowerCase();
+
+            // Validate both MIME type and file extension to prevent spoofing
+            if (allowedMimeTypes.includes(file.mimetype) && allowedExtensions.includes(fileExt)) {
                 callback(null, true);
             } else {
-                callback(new Error('Solo se permiten archivos de imagen (JPG, PNG, HEIC)'), false);
+                callback(new Error('Solo se permiten archivos de imagen (JPG, PNG, HEIC) con extensión válida'), false);
             }
         }
     }))
     @ApiConsumes('multipart/form-data')
     @ApiResponse({ status: 201, description: 'Foto subida exitosamente' })
-    @ApiResponse({ status: 400, description: 'Archivo inválido' })
+    @ApiResponse({ status: 400, description: 'Archivo inválido o demasiado grande' })
+    @ApiResponse({ status: 413, description: 'Archivo excede el límite de 5MB' })
     async uploadPhoto(@UploadedFile() file: Express.Multer.File) {
         if (!file) {
             return {
                 success: false,
                 message: "No se proporcionó ningún archivo"
+            };
+        }
+
+        // Additional validation: check file size (belt and suspenders approach)
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        if (file.size > maxSize) {
+            return {
+                success: false,
+                message: "El archivo excede el límite de 5MB"
             };
         }
 

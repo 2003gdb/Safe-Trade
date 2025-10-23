@@ -10,7 +10,13 @@ import 'dotenv/config';
 async function bootstrap() {
   // Validate required environment variables before starting the app
   EnvValidationService.validateRequiredEnvVars();
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    bodyParser: true,
+  });
+
+  // Set request size limits to prevent DoS attacks
+  app.use(require('express').json({ limit: '10mb' }));
+  app.use(require('express').urlencoded({ limit: '10mb', extended: true }));
 
   // Serve static files from public directory
   app.useStaticAssets(join(__dirname, '..', 'public'));
