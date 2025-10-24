@@ -68,9 +68,43 @@ struct AuthenticationModel {
     // MARK: - Token Validation
 
     static func isTokenExpired(_ token: String) -> Bool {
-        // TODO: Implement JWT token expiry validation
-        // For now, return false (assume token is valid)
-        return false
+        do {
+            // JWT format: header.payload.signature
+            let parts = token.split(separator: ".")
+            guard parts.count == 3 else {
+                // Invalid JWT format
+                return true
+            }
+
+            // Decode payload (second part)
+            var payloadString = String(parts[1])
+
+            // Add padding if necessary (Base64 requires padding to be multiple of 4)
+            let padding = 4 - (payloadString.count % 4)
+            if padding != 4 {
+                payloadString += String(repeating: "=", count: padding)
+            }
+
+            guard let payloadData = Data(base64Encoded: payloadString) else {
+                // Invalid Base64 encoding
+                return true
+            }
+
+            // Parse JSON payload
+            if let json = try JSONSerialization.jsonObject(with: payloadData) as? [String: Any],
+               let expiryTimestamp = json["exp"] as? TimeInterval {
+                // exp is in seconds since epoch
+                let expiryDate = Date(timeIntervalSince1970: expiryTimestamp)
+                // Token is expired if current time is past expiry time
+                return Date() > expiryDate
+            }
+
+            // If exp claim is missing, consider token valid (backend responsibility)
+            return false
+        } catch {
+            // If we can't parse the token, consider it expired for safety
+            return true
+        }
     }
 
     // MARK: - Business Rules

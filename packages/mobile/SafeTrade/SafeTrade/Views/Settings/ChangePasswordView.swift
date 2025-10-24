@@ -124,8 +124,12 @@ struct ChangePasswordView: View {
                 HStack {
                     if showCurrentPassword {
                         TextField("Ingresa tu contraseña actual", text: $currentPassword)
+                            .textContentType(.password)
+                            .autocorrectionDisabled()
                     } else {
                         SecureField("Ingresa tu contraseña actual", text: $currentPassword)
+                            .textContentType(.password)
+                            .autocorrectionDisabled()
                     }
 
                     Button(action: { showCurrentPassword.toggle() }) {
@@ -147,8 +151,12 @@ struct ChangePasswordView: View {
                 HStack {
                     if showNewPassword {
                         TextField("Ingresa tu nueva contraseña", text: $newPassword)
+                            .textContentType(.newPassword)
+                            .autocorrectionDisabled()
                     } else {
                         SecureField("Ingresa tu nueva contraseña", text: $newPassword)
+                            .textContentType(.newPassword)
+                            .autocorrectionDisabled()
                     }
 
                     Button(action: { showNewPassword.toggle() }) {
@@ -185,8 +193,12 @@ struct ChangePasswordView: View {
                 HStack {
                     if showConfirmPassword {
                         TextField("Confirma tu nueva contraseña", text: $confirmPassword)
+                            .textContentType(.newPassword)
+                            .autocorrectionDisabled()
                     } else {
                         SecureField("Confirma tu nueva contraseña", text: $confirmPassword)
+                            .textContentType(.newPassword)
+                            .autocorrectionDisabled()
                     }
 
                     Button(action: { showConfirmPassword.toggle() }) {

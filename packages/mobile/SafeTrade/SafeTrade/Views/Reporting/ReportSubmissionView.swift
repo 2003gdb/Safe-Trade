@@ -144,6 +144,7 @@ struct ReportSubmissionView: View {
 
             TextField("Describe detalladamente lo que ocurrió...", text: $viewModel.description, axis: .vertical)
                 .lineLimit(4...8)
+                .autocorrectionDisabled()
                 .bmadInputField()
         }
         .bmadCard()
@@ -243,6 +244,7 @@ struct ReportSubmissionView: View {
                         .bmadInputField()
                         .keyboardType(getKeyboardType())
                         .textInputAutocapitalization(getAutocapitalization())
+                        .autocorrectionDisabled()
 
                     if viewModel.showValidationErrors, let error = viewModel.validateAttackOrigin() {
                         Text(error)
@@ -261,7 +263,9 @@ struct ReportSubmissionView: View {
                             TextField("https://ejemplo-sospechoso.com", text: $viewModel.suspiciousUrl)
                                 .bmadInputField()
                                 .keyboardType(.URL)
+                                .textContentType(.URL)
                                 .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
 
                             if viewModel.showValidationErrors, let error = viewModel.validateSuspiciousUrl() {
                                 Text(error)
@@ -404,6 +408,7 @@ struct ReportSubmissionView: View {
 
                         TextField("Describe el mensaje o comunicación recibida...", text: $viewModel.messageContent, axis: .vertical)
                             .lineLimit(3...6)
+                            .autocorrectionDisabled()
                             .bmadInputField()
                             .onChange(of: viewModel.messageContent) { _, newValue in
                                 if newValue.count > 5000 {

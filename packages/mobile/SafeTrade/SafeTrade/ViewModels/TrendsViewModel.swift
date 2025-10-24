@@ -71,7 +71,9 @@ class TrendsViewModel: ObservableObject {
                     }
                 }
             } catch {
+                #if DEBUG
                 print("Error loading community alert")
+                #endif
             }
         }
     }

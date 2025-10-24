@@ -163,8 +163,9 @@ struct ChangeNameView: View {
 
                 TextField("Ingresa tu nuevo nombre", text: $newName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .textContentType(.name)
                     .autocapitalization(.words)
-                    .disableAutocorrection(false)
+                    .autocorrectionDisabled()
                     .padding(.horizontal)
                     .padding(.vertical, 8)
                     .background(Color(.systemGray6))
@@ -195,8 +196,12 @@ struct ChangeNameView: View {
                 HStack {
                     if showPassword {
                         TextField("Ingresa tu contraseña actual", text: $password)
+                            .textContentType(.password)
+                            .autocorrectionDisabled()
                     } else {
                         SecureField("Ingresa tu contraseña actual", text: $password)
+                            .textContentType(.password)
+                            .autocorrectionDisabled()
                     }
 
                     Button(action: { showPassword.toggle() }) {

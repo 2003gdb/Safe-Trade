@@ -146,7 +146,9 @@ struct ProfileView: View {
                         isLoadingReports = false
                     }
                     if case .failure(let error) = completion {
+                        #if DEBUG
                         print("❌ Failed to load user reports: \(error)")
+                        #endif
                     }
                 },
                 receiveValue: { reports in

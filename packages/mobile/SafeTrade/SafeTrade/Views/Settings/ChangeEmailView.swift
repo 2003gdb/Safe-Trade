@@ -155,8 +155,9 @@ struct ChangeEmailView: View {
                 TextField("ejemplo@correo.com", text: $newEmail)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .keyboardType(.emailAddress)
+                    .textContentType(.emailAddress)
                     .autocapitalization(.none)
-                    .disableAutocorrection(true)
+                    .autocorrectionDisabled()
                     .padding(.horizontal)
                     .padding(.vertical, 8)
                     .background(Color(.systemGray6))
@@ -187,8 +188,12 @@ struct ChangeEmailView: View {
                 HStack {
                     if showPassword {
                         TextField("Ingresa tu contraseña actual", text: $password)
+                            .textContentType(.password)
+                            .autocorrectionDisabled()
                     } else {
                         SecureField("Ingresa tu contraseña actual", text: $password)
+                            .textContentType(.password)
+                            .autocorrectionDisabled()
                     }
 
                     Button(action: { showPassword.toggle() }) {

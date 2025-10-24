@@ -10,9 +10,16 @@ class AuthenticationService: ObservableObject {
     @Published var currentUser: User?
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @Published var isLockedOutFromLogin = false
+    @Published var lockoutTimeRemaining: TimeInterval = 0
 
     // MARK: - Dependencies
     private let repository = AuthenticationRepository.shared
+
+    // MARK: - Rate Limiting State
+    private var failedLoginAttempts = 0
+    private var lastFailedLoginAttempt: Date?
+    private var lockoutTimer: Timer?
 
     private init() {
         checkAuthenticationStatus()
@@ -36,6 +43,24 @@ class AuthenticationService: ObservableObject {
 
     // MARK: - Login
     func login(email: String, password: String) async throws -> AuthResponse {
+        // Check if user is locked out from too many failed attempts
+        if let lastAttempt = lastFailedLoginAttempt {
+            if AuthenticationModel.canAttemptLogin(failedAttempts: failedLoginAttempts, lastAttempt: lastAttempt) {
+                // Reset failed attempts if lockout period has passed
+                failedLoginAttempts = 0
+                isLockedOutFromLogin = false
+                stopLockoutTimer()
+            } else {
+                // Still in lockout period
+                isLockedOutFromLogin = true
+                startLockoutTimer(lastAttempt: lastAttempt)
+                let lockoutDuration: TimeInterval = 15 * 60 // 15 minutes
+                let timeRemaining = lockoutDuration - Date().timeIntervalSince(lastAttempt)
+                lockoutTimeRemaining = max(0, timeRemaining)
+                throw AuthError.lockedOutFromTooManyAttempts
+            }
+        }
+
         isLoading = true
         errorMessage = nil
 
@@ -64,19 +89,76 @@ class AuthenticationService: ObservableObject {
             self.currentUser = authResponse.user
             self.isLoading = false
 
+            // Reset failed login attempts on successful login
+            failedLoginAttempts = 0
+            lastFailedLoginAttempt = nil
+            isLockedOutFromLogin = false
+            stopLockoutTimer()
+
             // Provide success haptic feedback
             HapticFeedback.shared.loginSuccess()
 
             return authResponse
         } catch {
             self.isLoading = false
-            self.errorMessage = "Error de autenticación"
+
+            // Check if error is due to invalid credentials (failed login attempt)
+            if error is AuthError {
+                let authError = error as! AuthError
+                if authError == .invalidCredentials {
+                    // Increment failed login attempts
+                    failedLoginAttempts += 1
+                    lastFailedLoginAttempt = Date()
+
+                    // Check if we should lock out the user
+                    if !AuthenticationModel.canAttemptLogin(failedAttempts: failedLoginAttempts, lastAttempt: lastFailedLoginAttempt ?? Date()) {
+                        isLockedOutFromLogin = true
+                        startLockoutTimer(lastAttempt: lastFailedLoginAttempt ?? Date())
+                        self.errorMessage = "Too many failed login attempts. Please try again later."
+                    } else {
+                        let remainingAttempts = 5 - failedLoginAttempts
+                        self.errorMessage = "Error de autenticación. \(remainingAttempts) attempts remaining."
+                    }
+                } else {
+                    self.errorMessage = "Error de autenticación"
+                }
+            } else {
+                self.errorMessage = "Error de autenticación"
+            }
 
             // Provide error haptic feedback
             HapticFeedback.shared.loginError()
 
             throw error
         }
+    }
+
+    // MARK: - Rate Limiting Helpers
+    private func startLockoutTimer(lastAttempt: Date) {
+        lockoutTimer?.invalidate()
+        let lockoutDuration: TimeInterval = 15 * 60 // 15 minutes
+
+        lockoutTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+            let timeRemaining = lockoutDuration - Date().timeIntervalSince(lastAttempt)
+            if timeRemaining <= 0 {
+                self.lockoutTimeRemaining = 0
+                self.isLockedOutFromLogin = false
+                self.failedLoginAttempts = 0
+                self.stopLockoutTimer()
+            } else {
+                self.lockoutTimeRemaining = timeRemaining
+            }
+        }
+    }
+
+    private func stopLockoutTimer() {
+        lockoutTimer?.invalidate()
+        lockoutTimer = nil
+    }
+
+    deinit {
+        stopLockoutTimer()
     }
 
     // MARK: - Registration
@@ -287,6 +369,7 @@ enum AuthError: Error, LocalizedError {
     case keychainError
     case invalidCredentials
     case networkError
+    case lockedOutFromTooManyAttempts
 
     var errorDescription: String? {
         switch self {
@@ -298,6 +381,8 @@ enum AuthError: Error, LocalizedError {
             return "Credenciales inválidas"
         case .networkError:
             return "Error de conexión"
+        case .lockedOutFromTooManyAttempts:
+            return "Demasiados intentos de inicio de sesión fallidos. Por favor, inténtelo más tarde."
         }
     }
 }

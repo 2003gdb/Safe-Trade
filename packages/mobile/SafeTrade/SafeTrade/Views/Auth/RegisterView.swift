@@ -95,6 +95,7 @@ struct RegisterView: View {
                                         )
                                         .cornerRadius(12)
                                         .keyboardType(.emailAddress)
+                                        .textContentType(.emailAddress)
                                         .autocapitalization(.none)
                                         .autocorrectionDisabled()
                                 }
@@ -113,6 +114,8 @@ struct RegisterView: View {
                                                 .stroke(Color(red: 161/255, green: 205/255, blue: 244/255).opacity(0.3), lineWidth: 1)
                                         )
                                         .cornerRadius(12)
+                                        .textContentType(.newPassword)
+                                        .autocorrectionDisabled()
 
                                     if !password.isEmpty && password.count < 8 {
                                         Text("La contraseña debe tener al menos 8 caracteres")
@@ -135,6 +138,8 @@ struct RegisterView: View {
                                                 .stroke(Color(red: 161/255, green: 205/255, blue: 244/255).opacity(0.3), lineWidth: 1)
                                         )
                                         .cornerRadius(12)
+                                        .textContentType(.newPassword)
+                                        .autocorrectionDisabled()
 
                                     if !confirmPassword.isEmpty && password != confirmPassword {
                                         Text("Las contraseñas no coinciden")

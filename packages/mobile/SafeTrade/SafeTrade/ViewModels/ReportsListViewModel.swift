@@ -53,14 +53,18 @@ class ReportsListViewModel: ObservableObject {
 
     // MARK: - Data Loading
     func loadReports() {
+        #if DEBUG
         print("🔄 ReportsListViewModel: Starting to load reports...")
+        #endif
         isLoading = true
         errorMessage = nil
 
         // Load both all reports and user reports
         let allReportsPublisher = reportingService.getAllReports()
             .catch { error -> Just<[Report]> in
+                #if DEBUG
                 print("❌ Error loading all reports: \(error)")
+                #endif
                 return Just([Report]())
             }
             .eraseToAnyPublisher()
@@ -68,15 +72,21 @@ class ReportsListViewModel: ObservableObject {
         let userReportsPublisher: AnyPublisher<[Report], Never>
 
         if AuthenticationRepository.shared.hasValidToken() {
+            #if DEBUG
             print("🔐 User is authenticated, loading user reports...")
+            #endif
             userReportsPublisher = reportingService.getUserReports()
                 .catch { error -> Just<[Report]> in
+                    #if DEBUG
                     print("❌ Error loading user reports: \(error)")
+                    #endif
                     return Just([Report]())
                 }
                 .eraseToAnyPublisher()
         } else {
+            #if DEBUG
             print("🔓 User not authenticated, skipping user reports")
+            #endif
             userReportsPublisher = Just([Report]()).eraseToAnyPublisher()
         }
 
@@ -85,14 +95,20 @@ class ReportsListViewModel: ObservableObject {
             .sink(
                 receiveCompletion: { [weak self] completion in
                     self?.isLoading = false
+                    #if DEBUG
                     print("✅ Reports loading completed")
+                    #endif
                     if case .failure(let error) = completion {
+                        #if DEBUG
                         print("❌ Final completion error: \(error)")
+                        #endif
                         self?.errorMessage = "Error al cargar reportes: \(error.localizedDescription)"
                     }
                 },
                 receiveValue: { [weak self] allReports, userReports in
+                    #if DEBUG
                     print("📊 Received \(allReports.count) all reports, \(userReports.count) user reports")
+                    #endif
                     self?.allReports = allReports
                     self?.userReports = userReports
                     self?.applyFilters()
@@ -109,15 +125,21 @@ class ReportsListViewModel: ObservableObject {
             }
 
             do {
+                #if DEBUG
                 print("🔔 [ReportsListViewModel] Starting to load community alert...")
+                #endif
                 let response = try await communityService.getCommunityAlert()
+                #if DEBUG
                 print("🔔 [ReportsListViewModel] Got response - success: \(response.success)")
+                #endif
 
                 await MainActor.run {
                     self.communityAlertLoading = false
 
                     if response.success {
+                        #if DEBUG
                         print("✅ [ReportsListViewModel] Alert loaded successfully: \(response.alerta.nivel)")
+                        #endif
                         self.communityAlert = response.alerta
                         self.communityAlertError = nil
 
@@ -127,14 +149,18 @@ class ReportsListViewModel: ObservableObject {
                         }
                     } else {
                         let errorMsg = "Error del servidor al cargar alerta comunitaria"
+                        #if DEBUG
                         print("❌ [ReportsListViewModel] Backend returned success=false")
+                        #endif
                         self.communityAlertError = errorMsg
                         self.communityAlert = nil
                     }
                 }
             } catch {
+                #if DEBUG
                 print("❌ [ReportsListViewModel] Error loading community alert: \(error)")
                 print("❌ [ReportsListViewModel] Error details: \(error.localizedDescription)")
+                #endif
 
                 await MainActor.run {
                     self.communityAlertLoading = false
@@ -167,10 +193,12 @@ class ReportsListViewModel: ObservableObject {
     }
 
     func applyFilters() {
+        #if DEBUG
         print("🔍 Applying filters...")
         print("📊 Available data: allReports=\(allReports.count), userReports=\(userReports.count)")
         print("🎯 Current filter: \(selectedFilter.displayName)")
         print("🔍 Search query: '\(searchQuery)'")
+        #endif
 
         var reports: [Report]
 
@@ -178,13 +206,19 @@ class ReportsListViewModel: ObservableObject {
         switch selectedFilter {
         case .todos:
             reports = allReports
+            #if DEBUG
             print("📋 Using all reports: \(reports.count)")
+            #endif
         case .misReportes:
             reports = userReports
+            #if DEBUG
             print("👤 Using user reports: \(reports.count)")
+            #endif
         case .nuevo, .revisado, .enInvestigacion, .cerrado:
             reports = allReports.filter { $0.status == selectedFilter.rawValue }
+            #if DEBUG
             print("🏷️ Filtered by status '\(selectedFilter.rawValue)': \(reports.count)")
+            #endif
         }
 
         // Apply search filter
@@ -196,14 +230,18 @@ class ReportsListViewModel: ObservableObject {
                 (report.attackOrigin?.lowercased().contains(query) ?? false) ||
                 (report.description?.lowercased().contains(query) ?? false)
             }
+            #if DEBUG
             print("🔎 After search filter: \(beforeSearch) → \(reports.count)")
+            #endif
         }
 
         // Sort by creation date (newest first)
         reports = reports.sorted { $0.createdAt > $1.createdAt }
 
         filteredReports = reports
+        #if DEBUG
         print("✅ Final filtered reports: \(filteredReports.count)")
+        #endif
     }
 
     func changeFilter(to filter: ReportFilter) {

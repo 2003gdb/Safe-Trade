@@ -246,19 +246,40 @@ struct CatalogData: Codable {
         let container = try decoder.container(keyedBy: DynamicCodingKeys.self)
 
         // Try both possible keys for attack types
-        if let attackTypesArray = try? container.decode([CatalogAttackType].self, forKey: DynamicCodingKeys(stringValue: "attackTypes")!) {
+        if let attackTypesKey = DynamicCodingKeys(stringValue: "attackTypes"),
+           let attackTypesArray = try? container.decode([CatalogAttackType].self, forKey: attackTypesKey) {
             self.attackTypes = attackTypesArray
-        } else if let attackTypesArray = try? container.decode([CatalogAttackType].self, forKey: DynamicCodingKeys(stringValue: "attack_types")!) {
+        } else if let attack_typesKey = DynamicCodingKeys(stringValue: "attack_types"),
+                  let attackTypesArray = try? container.decode([CatalogAttackType].self, forKey: attack_typesKey) {
             self.attackTypes = attackTypesArray
         } else {
+            guard let attackTypesKey = DynamicCodingKeys(stringValue: "attackTypes") else {
+                throw DecodingError.keyNotFound(
+                    CodingKeys.attackTypes,
+                    DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Failed to create coding key for attackTypes")
+                )
+            }
             throw DecodingError.keyNotFound(
-                DynamicCodingKeys(stringValue: "attackTypes")!,
+                attackTypesKey,
                 DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Missing attackTypes or attack_types")
             )
         }
 
-        self.impacts = try container.decode([CatalogImpact].self, forKey: DynamicCodingKeys(stringValue: "impacts")!)
-        self.statuses = try container.decode([CatalogStatus].self, forKey: DynamicCodingKeys(stringValue: "statuses")!)
+        guard let impactsKey = DynamicCodingKeys(stringValue: "impacts") else {
+            throw DecodingError.keyNotFound(
+                CodingKeys.impacts,
+                DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Failed to create coding key for impacts")
+            )
+        }
+        self.impacts = try container.decode([CatalogImpact].self, forKey: impactsKey)
+
+        guard let statusesKey = DynamicCodingKeys(stringValue: "statuses") else {
+            throw DecodingError.keyNotFound(
+                CodingKeys.statuses,
+                DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Failed to create coding key for statuses")
+            )
+        }
+        self.statuses = try container.decode([CatalogStatus].self, forKey: statusesKey)
     }
 }
 

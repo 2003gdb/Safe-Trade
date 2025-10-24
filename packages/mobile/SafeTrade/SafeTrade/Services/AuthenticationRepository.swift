@@ -46,7 +46,9 @@ class AuthenticationRepository {
         do {
             return try JSONDecoder().decode(User.self, from: userData)
         } catch {
+            #if DEBUG
             print("Error decoding user: \(error)")
+            #endif
             return nil
         }
     }
@@ -64,8 +66,16 @@ class AuthenticationRepository {
     // MARK: - Authentication State
     func hasValidToken() -> Bool {
         guard let token = getToken() else { return false }
-        return !token.isEmpty
-        // TODO: Add token expiry validation here
+        if token.isEmpty {
+            return false
+        }
+        // Check if token is expired
+        if AuthenticationModel.isTokenExpired(token) {
+            // Clear expired token
+            deleteToken()
+            return false
+        }
+        return true
     }
 
     func clearAllData() {
