@@ -8,6 +8,7 @@ import { UsersModule } from './users/users.module';
 import { AdminModule } from './admin/admin.module';
 import { ReportesModule } from './reportes/reportes.module';
 import { ComunidadModule } from './comunidad/comunidad.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ComunidadModule } from './comunidad/comunidad.module';
     AdminModule,
     ReportesModule,
     ComunidadModule,
+    HealthModule,
     JwtModule.register({
       global: true,
       secret: EnvValidationService.getJwtSecret(),

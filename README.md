@@ -243,6 +243,9 @@ npm run lint
 
 ### Endpoints Principales
 
+**Health Check:**
+- `GET /health` - Verificar estado del API (retorna `{"status": "ok", "message": "SafeTrade API is running", "timestamp": "..."}`)
+
 **Autenticación:**
 - `POST /auth/register` - Registrar usuario
 - `POST /auth/login` - Iniciar sesión
