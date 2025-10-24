@@ -54,27 +54,23 @@ export class AdminRepository {
     }
 
     async getReportStats(): Promise<ReportStats> {
-        // Get total reports
+
         const totalSql = `SELECT COUNT(*) as count FROM reports`;
         const [totalRows] = await this.db.getPool().query(totalSql);
         const totalResult = totalRows as { count: number }[];
 
-        // Get reports today
         const todaySql = `SELECT COUNT(*) as count FROM reports WHERE DATE(created_at) = CURDATE()`;
         const [todayRows] = await this.db.getPool().query(todaySql);
         const todayResult = todayRows as { count: number }[];
 
-        // Get critical reports (high impact)
         const criticalSql = `SELECT COUNT(*) as count FROM reports WHERE impact IN (2, 3, 4)`;
         const [criticalRows] = await this.db.getPool().query(criticalSql);
         const criticalResult = criticalRows as { count: number }[];
 
-        // Get pending reports
         const pendingSql = `SELECT COUNT(*) as count FROM reports WHERE status = 1`;
         const [pendingRows] = await this.db.getPool().query(pendingSql);
         const pendingResult = pendingRows as { count: number }[];
 
-        // Get attack types distribution
         const attackTypesSql = `SELECT attack_type, COUNT(*) as count FROM reports GROUP BY attack_type ORDER BY count DESC`;
         const [attackTypesRows] = await this.db.getPool().query(attackTypesSql);
         const attackTypes = attackTypesRows as { attack_type: string; count: number }[];
@@ -170,7 +166,7 @@ export class AdminRepository {
         const [result] = await this.db.getPool().query(sql, params);
         const updateResult = result as { affectedRows: number };
 
-        // If update was successful, return the updated report
+
         if (updateResult.affectedRows > 0) {
             return await this.getReportById(reportId);
         }
