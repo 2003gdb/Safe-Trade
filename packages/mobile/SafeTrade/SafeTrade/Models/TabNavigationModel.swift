@@ -7,7 +7,7 @@ enum TabItem: String, CaseIterable {
     var title: String {
         switch self {
         case .trends:
-            return "Estadísticas"
+            return "Reportes"
         case .profile:
             return "Perfil"
         }
