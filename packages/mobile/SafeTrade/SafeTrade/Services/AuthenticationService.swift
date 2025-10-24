@@ -141,13 +141,15 @@ class AuthenticationService: ObservableObject {
         lockoutTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             guard let self = self else { return }
             let timeRemaining = lockoutDuration - Date().timeIntervalSince(lastAttempt)
-            if timeRemaining <= 0 {
-                self.lockoutTimeRemaining = 0
-                self.isLockedOutFromLogin = false
-                self.failedLoginAttempts = 0
-                self.stopLockoutTimer()
-            } else {
-                self.lockoutTimeRemaining = timeRemaining
+            Task { @MainActor in
+                if timeRemaining <= 0 {
+                    self.lockoutTimeRemaining = 0
+                    self.isLockedOutFromLogin = false
+                    self.failedLoginAttempts = 0
+                    self.stopLockoutTimer()
+                } else {
+                    self.lockoutTimeRemaining = timeRemaining
+                }
             }
         }
     }
@@ -158,7 +160,8 @@ class AuthenticationService: ObservableObject {
     }
 
     deinit {
-        stopLockoutTimer()
+        lockoutTimer?.invalidate()
+        lockoutTimer = nil
     }
 
     // MARK: - Registration

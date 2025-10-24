@@ -16,7 +16,7 @@ enum TabItem: String, CaseIterable {
     var icon: String {
         switch self {
         case .trends:
-            return "chart.bar.fill"
+            return "doc.text"
         case .profile:
             return "person.fill"
         }

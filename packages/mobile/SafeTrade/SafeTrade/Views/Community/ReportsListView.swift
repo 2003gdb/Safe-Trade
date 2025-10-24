@@ -180,83 +180,124 @@ struct ReportCardView: View {
     let reporterName: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            // Header with status
-            HStack {
-                HStack(spacing: 8) {
-                    Circle()
-                        .fill(statusColor)
-                        .frame(width: 8, height: 8)
-
-                    Text(report.getAttackTypeDisplayName())
-                        .font(.headline)
-                        .fontWeight(.semibold)
+        VStack(alignment: .leading, spacing: 0) {
+            // Evidence Image (if available)
+            if let evidenceUrl = report.evidenceUrl, !evidenceUrl.isEmpty {
+                AsyncImage(url: URL(string: evidenceUrl)) { phase in
+                    switch phase {
+                    case .empty:
+                        VStack {
+                            ProgressView()
+                                .scaleEffect(1.2)
+                        }
+                        .frame(height: 200)
+                        .frame(maxWidth: .infinity)
+                        .background(Color(.systemGray6))
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFill()
+                            .frame(height: 200)
+                            .frame(maxWidth: .infinity)
+                            .clipped()
+                    case .failure:
+                        VStack {
+                            Image(systemName: "photo.fill")
+                                .font(.system(size: 32))
+                                .foregroundColor(.secondary)
+                            Text("No se pudo cargar la imagen")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        .frame(height: 200)
+                        .frame(maxWidth: .infinity)
+                        .background(Color(.systemGray6))
+                    @unknown default:
+                        EmptyView()
+                    }
                 }
-
-                Spacer()
-
-                HStack(spacing: 4) {
-                    Image(systemName: statusIcon)
-                        .font(.caption)
-                        .foregroundColor(statusColor)
-
-                    Text(report.getStatusDisplayName())
-                        .font(.caption)
-                        .fontWeight(.medium)
-                        .foregroundColor(statusColor)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 2)
-                        .background(statusColor.opacity(0.1))
-                        .cornerRadius(8)
-                }
+                .clipped()
             }
 
-            // Details
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 8) {
-                    Image(systemName: "calendar")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .frame(width: 16)
+            // Card Content
+            VStack(alignment: .leading, spacing: 12) {
+                // Header with status
+                HStack {
+                    HStack(spacing: 8) {
+                        Circle()
+                            .fill(statusColor)
+                            .frame(width: 8, height: 8)
 
-                    Text("Fecha: \(formattedDate)")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                        Text(report.getAttackTypeDisplayName())
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                    }
+
+                    Spacer()
+
+                    HStack(spacing: 4) {
+                        Image(systemName: statusIcon)
+                            .font(.caption)
+                            .foregroundColor(statusColor)
+
+                        Text(report.getStatusDisplayName())
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(statusColor)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                            .background(statusColor.opacity(0.1))
+                            .cornerRadius(8)
+                    }
                 }
 
-                HStack(spacing: 8) {
-                    Image(systemName: "person")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .frame(width: 16)
+                // Details
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "calendar")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .frame(width: 16)
 
-                    Text("Reportado por: \(reporterName)")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                        Text("Fecha: \(formattedDate)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+
+                    HStack(spacing: 8) {
+                        Image(systemName: "person")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .frame(width: 16)
+
+                        Text("Reportado por: \(reporterName)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+
+                    HStack(spacing: 8) {
+                        Image(systemName: attackTypeIcon)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .frame(width: 16)
+
+                        Text("Origen: \(report.attackOrigin)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .lineLimit(2)
+                    }
                 }
 
-                HStack(spacing: 8) {
-                    Image(systemName: attackTypeIcon)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .frame(width: 16)
-
-                    Text("Origen: \(report.attackOrigin)")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .lineLimit(2)
+                if let description = report.description, !description.isEmpty {
+                    Text(description)
+                        .font(.body)
+                        .foregroundColor(.primary)
+                        .lineLimit(3)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
-
-            if let description = report.description, !description.isEmpty {
-                Text(description)
-                    .font(.body)
-                    .foregroundColor(.primary)
-                    .lineLimit(3)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
+            .padding()
         }
-        .padding()
         .background(Color(.systemBackground))
         .cornerRadius(12)
         .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
