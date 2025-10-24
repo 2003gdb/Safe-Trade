@@ -36,7 +36,6 @@ export class EnvValidationService {
       throw new Error(errorMessage);
     }
 
-    // Validate JWT_SECRET strength
     const jwtSecret = process.env.JWT_SECRET!;
     if (jwtSecret.length < 32) {
       throw new Error('JWT_SECRET debe tener al menos 32 caracteres para mayor seguridad');

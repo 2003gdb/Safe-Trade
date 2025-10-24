@@ -1,5 +1,3 @@
-// Servicio de usuarios con bcrypt para autenticación segura
-
 import { Injectable } from "@nestjs/common";
 import { UsersRepository, User } from "./users.repository";
 import { generateSalt, hashPassword, verifyPassword } from "src/util/hash/hash.util";

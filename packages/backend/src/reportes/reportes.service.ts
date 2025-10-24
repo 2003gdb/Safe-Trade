@@ -10,18 +10,15 @@ export class ReportesService {
     ) {}
 
     async createReporte(reporteData: CreateLegacyReportData): Promise<LegacyReport | null> {
-        // Validate required fields
         if (!reporteData.attack_type || !reporteData.incident_date || !reporteData.attack_origin || !reporteData.impact_level) {
             throw new Error('Campos requeridos: tipo de ataque, fecha del incidente, origen del ataque, nivel de impacto');
         }
 
-        // Validate attack type
         const validAttackTypes = ['email', 'SMS', 'whatsapp', 'llamada', 'redes_sociales', 'otro'];
         if (!validAttackTypes.includes(reporteData.attack_type)) {
             throw new Error('Tipo de ataque inválido');
         }
 
-        // Validate impact level
         const validImpactLevels = ['ninguno', 'robo_datos', 'robo_dinero', 'cuenta_comprometida'];
         if (!validImpactLevels.includes(reporteData.impact_level)) {
             throw new Error('Nivel de impacto inválido');
@@ -39,11 +36,9 @@ export class ReportesService {
     }
 
     async getAllReports(filters?: ReportFilterDto): Promise<{ reports: LegacyReport[], total: number, page: number, limit: number, totalPages: number }> {
-        // Set default pagination values
         const page = filters?.page ? parseInt(filters.page) : 1;
         const limit = filters?.limit ? parseInt(filters.limit) : 10;
 
-        // Get paginated data from repository
         const { reports, total } = await this.reportsRepository.findAllReports(filters);
 
         const totalPages = Math.ceil(total / limit);

@@ -35,13 +35,11 @@ class ReportingService: ObservableObject {
             let jsonData = try JSONEncoder().encode(request)
             urlRequest.httpBody = jsonData
 
+            #if DEBUG
             // Debug logging
             print("🔍 Sending report request:")
             print("URL: \(url)")
-            print("Headers: \(urlRequest.allHTTPHeaderFields ?? [:])")
-            if let jsonString = String(data: jsonData, encoding: .utf8) {
-                print("JSON Body: \(jsonString)")
-            }
+            #endif
         } catch {
             return Fail(error: error)
                 .eraseToAnyPublisher()
@@ -49,17 +47,18 @@ class ReportingService: ObservableObject {
 
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .map { output in
+                #if DEBUG
                 // Debug response
                 print("🔍 Received response:")
                 print("Status code: \((output.response as? HTTPURLResponse)?.statusCode ?? -1)")
-                if let responseString = String(data: output.data, encoding: .utf8) {
-                    print("Response body: \(responseString)")
-                }
+                #endif
                 return output.data
             }
             .decode(type: CreateReportResponse.self, decoder: JSONDecoder.reportDecoder)
             .catch { error in
+                #if DEBUG
                 print("❌ Decoding error: \(error)")
+                #endif
                 return Fail<CreateReportResponse, Error>(error: error)
             }
             .receive(on: DispatchQueue.main)
@@ -97,37 +96,46 @@ class ReportingService: ObservableObject {
 
     /// Get user's reports (requires authentication)
     func getUserReports() -> AnyPublisher<[Report], Error> {
+        #if DEBUG
         print("📡 ReportingService: Attempting to get user reports...")
+        #endif
 
         guard let token = apiService.authToken else {
+            #if DEBUG
             print("❌ No auth token available for user reports")
+            #endif
             return Fail(error: APIError.invalidResponse)
                 .eraseToAnyPublisher()
         }
 
         guard let url = URL(string: "\(apiService.baseURL)/reportes/user/mis-reportes") else {
+            #if DEBUG
             print("❌ Invalid URL: \(apiService.baseURL)/reportes/user/mis-reportes")
+            #endif
             return Fail(error: URLError(.badURL))
                 .eraseToAnyPublisher()
         }
 
+        #if DEBUG
         print("🌐 Making request to: \(url)")
+        #endif
         var request = URLRequest(url: url)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
 
         return URLSession.shared.dataTaskPublisher(for: request)
             .handleEvents(receiveOutput: { data, response in
+                #if DEBUG
                 if let httpResponse = response as? HTTPURLResponse {
                     print("📊 User Reports HTTP Response Status: \(httpResponse.statusCode)")
-                    if let dataString = String(data: data, encoding: .utf8) {
-                        print("📄 User Reports Response data: \(dataString.prefix(200))...")
-                    }
                 }
+                #endif
             })
             .map(\.data)
             .decode(type: GetUserReportsResponse.self, decoder: JSONDecoder.reportDecoder)
             .map { response in
+                #if DEBUG
                 print("✅ User Reports decoded successfully. Success: \(response.success), Reports count: \(response.reportes.count)")
+                #endif
                 return response.success ? response.reportes : []
             }
             .receive(on: DispatchQueue.main)
@@ -136,38 +144,49 @@ class ReportingService: ObservableObject {
 
     /// Get all reports (public access - no authentication required)
     func getAllReports() -> AnyPublisher<[Report], Error> {
+        #if DEBUG
         print("📡 ReportingService: Attempting to get all reports...")
+        #endif
 
         guard let url = URL(string: "\(apiService.baseURL)/reportes") else {
+            #if DEBUG
             print("❌ Invalid URL: \(apiService.baseURL)/reportes")
+            #endif
             return Fail(error: URLError(.badURL))
                 .eraseToAnyPublisher()
         }
 
+        #if DEBUG
         print("🌐 Making request to: \(url)")
+        #endif
         var request = URLRequest(url: url)
 
         // Add auth token if available (for AnonymousAuthGuard)
         if let token = apiService.authToken {
+            #if DEBUG
             print("🔐 Adding auth token to request")
+            #endif
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         } else {
+            #if DEBUG
             print("🔓 No auth token - making anonymous request")
+            #endif
         }
 
         return URLSession.shared.dataTaskPublisher(for: request)
             .handleEvents(receiveOutput: { data, response in
+                #if DEBUG
                 if let httpResponse = response as? HTTPURLResponse {
                     print("📊 HTTP Response Status: \(httpResponse.statusCode)")
-                    if let dataString = String(data: data, encoding: .utf8) {
-                        print("📄 Response data: \(dataString.prefix(200))...")
-                    }
                 }
+                #endif
             })
             .map(\.data)
             .decode(type: GetAllReportsResponse.self, decoder: JSONDecoder.reportDecoder)
             .map { response in
+                #if DEBUG
                 print("✅ Decoded response successfully. Reports count: \(response.data.count)")
+                #endif
                 return response.data
             }
             .receive(on: DispatchQueue.main)

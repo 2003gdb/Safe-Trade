@@ -1,10 +1,3 @@
-/**
- * Catalog Repository - Handles catalog table operations
- *
- * Provides access to attack_types, impacts, and status tables
- * for normalized foreign key relationships.
- */
-
 import { Injectable } from '@nestjs/common';
 import { DbService } from '../db/db.service';
 import { AttackType, Impact, Status } from './catalog.types';
@@ -13,7 +6,6 @@ import { AttackType, Impact, Status } from './catalog.types';
 export class CatalogRepository {
   constructor(private readonly db: DbService) {}
 
-  // ========== Attack Types ==========
   async getAllAttackTypes(): Promise<AttackType[]> {
     const sql = 'SELECT * FROM attack_types ORDER BY name';
     const [rows] = await this.db.getPool().query(sql);
@@ -34,7 +26,6 @@ export class CatalogRepository {
     return result[0] || null;
   }
 
-  // ========== Impacts ==========
   async getAllImpacts(): Promise<Impact[]> {
     const sql = 'SELECT * FROM impacts ORDER BY name';
     const [rows] = await this.db.getPool().query(sql);
@@ -55,7 +46,6 @@ export class CatalogRepository {
     return result[0] || null;
   }
 
-  // ========== Status ==========
   async getAllStatuses(): Promise<Status[]> {
     const sql = 'SELECT * FROM status ORDER BY name';
     const [rows] = await this.db.getPool().query(sql);
@@ -76,10 +66,6 @@ export class CatalogRepository {
     return result[0] || null;
   }
 
-  // ========== Utility Methods ==========
-  /**
-   * Get all catalog data in a single call for efficiency
-   */
   async getAllCatalogData(): Promise<{
     attackTypes: AttackType[];
     impacts: Impact[];

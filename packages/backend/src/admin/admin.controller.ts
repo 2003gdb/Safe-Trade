@@ -167,7 +167,6 @@ export class AdminController {
     async getDashboard() {
         const stats = await this.adminService.getDashboardStats();
 
-        // Return exactly as specified in API spec (docs/architecture/rest-api-spec.md)
         return {
             total_reports: stats.total_reports,
             reports_today: stats.reports_today,
@@ -184,7 +183,6 @@ export class AdminController {
         return await this.adminService.getEnhancedDashboardStats();
     }
 
-
     @Get('validate-token')
     @UseGuards(AdminAuthGuard)
     @ApiBearerAuth()
@@ -196,8 +194,6 @@ export class AdminController {
             message: "Token válido"
         };
     }
-
-    // New Advanced Endpoints for Frontend Compatibility
 
     @Get('reports')
     @UseGuards(AdminAuthGuard)
@@ -211,7 +207,6 @@ export class AdminController {
     @ApiQuery({ name: 'limit', required: false })
     @ApiResponse({ status: 200, description: 'Lista de reportes obtenida exitosamente' })
     async getReports(@Query() filters: ReportFilterDto) {
-        // Use admin-specific method that transforms data for frontend
         const reports = await this.adminService.getFilteredReportsForAdmin(filters);
         const page = parseInt(filters.page || '1');
         const limit = parseInt(filters.limit || '10');
@@ -255,7 +250,6 @@ export class AdminController {
     @ApiResponse({ status: 404, description: 'Reporte no encontrado' })
     async getReportById(@Param('id') id: string) {
         const reportId = parseInt(id);
-        // Use admin-specific method that transforms data for frontend
         const report = await this.adminService.getReportByIdForAdmin(reportId);
 
         if (!report) {

@@ -1,12 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-/**
- * Centralized catalog mapping service for converting between database IDs and string values
- * Used by all admin endpoints to ensure consistent data transformation
- */
 @Injectable()
 export class CatalogMappingService {
-    // ID to String mappings (database IDs to display strings)
     private readonly STATUS_ID_MAP = {
         1: 'nuevo',
         2: 'revisado',
@@ -30,7 +25,6 @@ export class CatalogMappingService {
         4: 'cuenta_comprometida'
     } as const;
 
-    // String to ID mappings (for incoming API requests)
     private readonly STATUS_MAP = {
         'nuevo': 1,
         'revisado': 2,
@@ -54,51 +48,30 @@ export class CatalogMappingService {
         'cuenta_comprometida': 4
     } as const;
 
-    /**
-     * Convert database ID to string value for status
-     */
     getStatusString(id: number): string {
         return this.STATUS_ID_MAP[id as keyof typeof this.STATUS_ID_MAP] || id.toString();
     }
 
-    /**
-     * Convert database ID to string value for attack type
-     */
     getAttackTypeString(id: number): string {
         return this.ATTACK_TYPE_ID_MAP[id as keyof typeof this.ATTACK_TYPE_ID_MAP] || id.toString();
     }
 
-    /**
-     * Convert database ID to string value for impact level
-     */
     getImpactString(id: number): string {
         return this.IMPACT_ID_MAP[id as keyof typeof this.IMPACT_ID_MAP] || id.toString();
     }
 
-    /**
-     * Convert string value to database ID for status
-     */
     getStatusId(status: string): number {
         return this.STATUS_MAP[status as keyof typeof this.STATUS_MAP] || 0;
     }
 
-    /**
-     * Convert string value to database ID for attack type
-     */
     getAttackTypeId(attackType: string): number {
         return this.ATTACK_TYPE_MAP[attackType as keyof typeof this.ATTACK_TYPE_MAP] || 0;
     }
 
-    /**
-     * Convert string value to database ID for impact level
-     */
     getImpactId(impact: string): number {
         return this.IMPACT_MAP[impact as keyof typeof this.IMPACT_MAP] || 0;
     }
 
-    /**
-     * Transform raw database report to admin-friendly format with string values
-     */
     transformReportForAdmin(rawReport: any): any {
         return {
             id: rawReport.id,
@@ -113,22 +86,16 @@ export class CatalogMappingService {
             impact_level: this.getImpactString(rawReport.impact),
             status: this.getStatusString(rawReport.status),
             description: rawReport.description,
-            admin_notes: rawReport.admin_notes || rawReport.admin_note, // Handle both field names
+            admin_notes: rawReport.admin_notes || rawReport.admin_note,
             created_at: rawReport.created_at,
             updated_at: rawReport.updated_at
         };
     }
 
-    /**
-     * Transform array of raw database reports to admin-friendly format
-     */
     transformReportsForAdmin(rawReports: any[]): any[] {
         return rawReports.map(report => this.transformReportForAdmin(report));
     }
 
-    /**
-     * Transform report summary for admin portal (camelCase format)
-     */
     transformReportSummaryForAdmin(rawReport: any): any {
         return {
             id: rawReport.id,
@@ -151,9 +118,6 @@ export class CatalogMappingService {
         };
     }
 
-    /**
-     * Get all status mappings for reference
-     */
     getAllStatusMappings() {
         return {
             idToString: this.STATUS_ID_MAP,
@@ -161,9 +125,6 @@ export class CatalogMappingService {
         };
     }
 
-    /**
-     * Get all attack type mappings for reference
-     */
     getAllAttackTypeMappings() {
         return {
             idToString: this.ATTACK_TYPE_ID_MAP,
@@ -171,9 +132,6 @@ export class CatalogMappingService {
         };
     }
 
-    /**
-     * Get all impact mappings for reference
-     */
     getAllImpactMappings() {
         return {
             idToString: this.IMPACT_ID_MAP,

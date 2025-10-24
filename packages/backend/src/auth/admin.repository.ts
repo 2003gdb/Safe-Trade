@@ -1,5 +1,3 @@
-// Repositorio de administradores con bcrypt y queries parametrizadas
-
 import { Injectable } from "@nestjs/common";
 import { DbService } from "src/db/db.service";
 import { generateSalt, hashPassword, verifyPassword } from "src/util/hash/hash.util";

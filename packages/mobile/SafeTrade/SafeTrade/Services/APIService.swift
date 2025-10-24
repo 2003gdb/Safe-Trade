@@ -22,14 +22,20 @@ class APIService {
         responseType: T.Type
     ) async throws -> T {
         let fullURL = "\(baseURL)\(endpoint)"
+        #if DEBUG
         print("🌐 API Request: \(method.rawValue) \(fullURL)")
+        #endif
 
         if let body = body, let bodyString = String(data: body, encoding: .utf8) {
+            #if DEBUG
             print("📤 Request Body: \(bodyString)")
+            #endif
         }
 
         guard let url = URL(string: fullURL) else {
+            #if DEBUG
             print("❌ Invalid URL: \(fullURL)")
+            #endif
             throw APIError.invalidURL
         }
 
@@ -52,16 +58,18 @@ class APIService {
         }
         
         let (data, response) = try await URLSession.shared.data(for: request)
-        
+
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIError.invalidResponse
         }
-        
+
+        #if DEBUG
         print("📡 Response Status: \(httpResponse.statusCode)")
 
         if let responseString = String(data: data, encoding: .utf8) {
             print("📥 Response Body: \(responseString)")
         }
+        #endif
 
         guard 200...299 ~= httpResponse.statusCode else {
             throw APIError.serverError(httpResponse.statusCode)
@@ -69,9 +77,12 @@ class APIService {
         
         do {
             let decodedResponse = try JSONDecoder().decode(responseType, from: data)
+            #if DEBUG
             print("✅ Successful decoding")
+            #endif
             return decodedResponse
         } catch {
+            #if DEBUG
             print("❌ Decoding Error: \(error)")
             if let decodingError = error as? DecodingError {
                 switch decodingError {
@@ -87,6 +98,7 @@ class APIService {
                     print("Unknown decoding error")
                 }
             }
+            #endif
             throw APIError.decodingError
         }
     }
@@ -256,7 +268,9 @@ extension APIService {
 
         request.httpBody = body
 
+        #if DEBUG
         print("🖼️ Uploading photo (\(imageData.count) bytes)")
+        #endif
 
         let (data, response) = try await URLSession.shared.data(for: request)
 
@@ -264,7 +278,9 @@ extension APIService {
             throw APIError.invalidResponse
         }
 
+        #if DEBUG
         print("📡 Upload Response Status: \(httpResponse.statusCode)")
+        #endif
 
         guard 200...299 ~= httpResponse.statusCode else {
             throw APIError.serverError(httpResponse.statusCode)
@@ -283,7 +299,9 @@ extension APIService {
             throw APIError.invalidResponse
         }
 
+        #if DEBUG
         print("✅ Photo uploaded: \(uploadResponse.url)")
+        #endif
         return uploadResponse.url
     }
 

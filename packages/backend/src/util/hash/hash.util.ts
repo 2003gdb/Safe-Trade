@@ -1,5 +1,3 @@
-// Utilidad para hashear contraseñas con bcrypt + salt manual
-
 import * as bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 

@@ -11,7 +11,7 @@ export class ComunidadController {
     constructor(private readonly comunidadService: ComunidadService) {}
 
     @Get('tendencias')
-    @UseGuards(AnonymousAuthGuard) // Allow both anonymous and authenticated access
+    @UseGuards(AnonymousAuthGuard)
     @ApiQuery({ name: 'period', enum: ['7days', '30days', '90days'], required: false })
     @ApiResponse({ status: 200, description: 'Tendencias comunitarias obtenidas exitosamente' })
     async getTendencias(
@@ -42,7 +42,7 @@ export class ComunidadController {
 
 
     @Get('analytics')
-    @UseGuards(AnonymousAuthGuard) // Community analytics available to all
+    @UseGuards(AnonymousAuthGuard)
     @ApiResponse({ status: 200, description: 'Analytics comunitarios obtenidos exitosamente' })
     async getAnalytics(@Req() req: AuthenticatedRequest) {
         try {
@@ -75,7 +75,6 @@ export class ComunidadController {
             const tendencias = await this.comunidadService.getTendencias('7days');
             const analytics = await this.comunidadService.getAnalytics();
 
-            // Generate community alert based on recent trends
             const alertLevel = this.determineAlertLevel(tendencias, analytics);
             const alertMessage = this.generateAlertMessage(alertLevel, tendencias);
 

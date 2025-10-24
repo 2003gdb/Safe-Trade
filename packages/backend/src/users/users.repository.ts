@@ -1,7 +1,3 @@
-// Repositorio de usuarios con queries parametrizadas para prevenir SQL injection
-
-/* eslint-disable prettier/prettier */
-
 import { Injectable } from "@nestjs/common";
 import { DbService } from "src/db/db.service";
 

@@ -1,31 +1,22 @@
-/**
- * Unified Reports Repository - Clean implementation for normalized schema
- *
- * This repository works exclusively with the new normalized `reports` table
- * and provides all necessary operations for the application.
- */
-
 import { Injectable } from '@nestjs/common';
 import { DbService } from '../db/db.service';
 import { CatalogMappingService } from '../admin/catalog-mapping.service';
 
-// Legacy-compatible interfaces for external API
 export interface LegacyReport {
   id: number;
   user_id: number | null;
   is_anonymous: boolean;
-  attack_type: string; // ENUM string
+  attack_type: string;
   incident_date: Date;
   attack_origin: string | null;
   suspicious_url: string | null;
   message_content: string | null;
-  impact_level: string; // ENUM string
+  impact_level: string;
   description: string | null;
-  status: string; // ENUM string
+  status: string;
   admin_notes: string | null;
   created_at: Date;
   updated_at: Date;
-  // Optional joined user data
   user_email?: string;
   user_name?: string;
   reporter_name?: string;
@@ -61,9 +52,6 @@ export class ReportsRepository {
     private readonly catalogMappingService: CatalogMappingService
   ) {}
 
-  /**
-   * Convert legacy report data to normalized format for database storage
-   */
   private convertToNormalized(data: CreateLegacyReportData) {
     const attackTypeId = this.catalogMappingService.getAttackTypeId(data.attack_type);
     const impactId = this.catalogMappingService.getImpactId(data.impact_level);
@@ -72,7 +60,6 @@ export class ReportsRepository {
       throw new Error(`Invalid enum values: attack_type=${data.attack_type}, impact_level=${data.impact_level}`);
     }
 
-    // Convert incident_date to Date if it's a string
     const incidentDateTime = typeof data.incident_date === 'string'
       ? new Date(data.incident_date)
       : data.incident_date;
@@ -88,13 +75,10 @@ export class ReportsRepository {
       message_content: data.message_content ?? null,
       description: data.description ?? null,
       impact: impactId,
-      status: 1 // Default to 'nuevo'
+      status: 1
     };
   }
 
-  /**
-   * Convert normalized database row to legacy format for API response
-   */
   private convertToLegacy(row: any): LegacyReport {
     return {
       id: row.id,
@@ -111,7 +95,6 @@ export class ReportsRepository {
       admin_notes: row.admin_notes,
       created_at: row.created_at,
       updated_at: row.updated_at,
-      // Include user data if available
       user_email: row.user_email,
       user_name: row.user_name,
       reporter_name: row.reporter_name
@@ -191,7 +174,6 @@ export class ReportsRepository {
     const conditions: string[] = [];
     const countValues: any[] = [];
 
-    // Convert legacy filters to normalized IDs
     if (filters?.status) {
       const statusId = this.catalogMappingService.getStatusId(filters.status);
       if (statusId) {
@@ -225,7 +207,6 @@ export class ReportsRepository {
 
     const whereClause = conditions.length > 0 ? ' WHERE ' + conditions.join(' AND ') : '';
 
-    // Get total count
     const countSql = `
       SELECT COUNT(*) as total
       FROM reports r
@@ -236,7 +217,6 @@ export class ReportsRepository {
     const [countRows] = await this.db.getPool().query(countSql, countValues);
     const total = (countRows as { total: number }[])[0].total;
 
-    // Get paginated data
     let dataSql = `
       SELECT r.*,
              CASE
@@ -253,7 +233,6 @@ export class ReportsRepository {
 
     const dataValues: any[] = [...countValues];
 
-    // Add pagination
     if (filters?.limit) {
       const limit = parseInt(filters.limit);
       const page = filters?.page ? parseInt(filters.page) : 1;
@@ -301,7 +280,6 @@ export class ReportsRepository {
     const [rows] = await this.db.getPool().query(sql, [days]);
     const result = rows as { attack_type: number; count: number }[];
 
-    // Convert attack_type IDs back to strings
     return result.map(row => ({
       attack_type: this.catalogMappingService.getAttackTypeString(row.attack_type),
       count: row.count
@@ -320,7 +298,6 @@ export class ReportsRepository {
     const [rows] = await this.db.getPool().query(sql, [days]);
     const result = rows as { impact: number; count: number }[];
 
-    // Convert impact IDs back to strings
     return result.map(row => ({
       impact_level: this.catalogMappingService.getImpactString(row.impact),
       count: row.count

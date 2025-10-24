@@ -70,7 +70,6 @@ export class UsersController {
     @Post('register')
     async createUser(@Body() createUserDto: CreateUserDto) {
         try {
-            // Check if user already exists
             const existingUser = await this.usersService.findByEmail(createUserDto.email);
             if (existingUser) {
                 throw new HttpException("El correo electrónico ya está registrado", HttpStatus.CONFLICT);
@@ -83,18 +82,15 @@ export class UsersController {
             );
 
             if (user) {
-                // Create user profile for JWT token
                 const userProfile: UserProfile = {
                     id: user.id,
                     email: user.email,
                     name: user.name
                 };
 
-                // Generate JWT tokens
                 const accessToken = await this.tokenService.generateAccessToken(userProfile);
                 const refreshToken = await this.tokenService.generateRefreshToken(userProfile);
 
-                // Don't return sensitive data
                 const { pass_hash: _pass_hash, salt: _salt, ...safeUser } = user;
 
                 return {
@@ -133,25 +129,21 @@ export class UsersController {
     @Put('profile/email')
     async updateEmail(@Req() req: AuthenticatedRequest, @Body() updateEmailDto: UpdateEmailDto) {
         try {
-            // Verify current password
             const user = await this.usersService.validateUser(req.user.profile.email, updateEmailDto.password);
             if (!user) {
                 throw new HttpException("Contraseña incorrecta", HttpStatus.UNAUTHORIZED);
             }
 
-            // Check if new email is already in use
             const existingUser = await this.usersService.findByEmail(updateEmailDto.new_email);
             if (existingUser && existingUser.id !== user.id) {
                 throw new HttpException("El correo electrónico ya está registrado", HttpStatus.CONFLICT);
             }
 
-            // Update email
             const updatedUser = await this.usersService.updateUser(user.id, { email: updateEmailDto.new_email });
             if (!updatedUser) {
                 throw new HttpException("Error al actualizar correo", HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
-            // Return updated user profile (exclude sensitive data)
             const { pass_hash: _pass_hash, salt: _salt, ...safeUser } = updatedUser;
 
             return {
@@ -175,7 +167,6 @@ export class UsersController {
         try {
             console.log('updateName called with:', { email: req.user.profile.email, new_name: updateNameDto.new_name });
 
-            // Verify current password
             const user = await this.usersService.validateUser(req.user.profile.email, updateNameDto.password);
             console.log('User validation result:', user ? 'valid' : 'invalid');
 
@@ -183,7 +174,6 @@ export class UsersController {
                 throw new HttpException("Contraseña incorrecta", HttpStatus.UNAUTHORIZED);
             }
 
-            // Update name
             console.log('Updating user with id:', user.id, 'new name:', updateNameDto.new_name);
             const updatedUser = await this.usersService.updateUser(user.id, { name: updateNameDto.new_name });
             console.log('Update result:', updatedUser ? 'success' : 'failed');
@@ -192,7 +182,6 @@ export class UsersController {
                 throw new HttpException("Error al actualizar nombre", HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
-            // Return updated user profile (exclude sensitive data)
             const { pass_hash: _pass_hash, salt: _salt, ...safeUser } = updatedUser;
 
             return {
@@ -215,19 +204,16 @@ export class UsersController {
     @Put('profile/password')
     async changePassword(@Req() req: AuthenticatedRequest, @Body() changePasswordDto: ChangePasswordDto) {
         try {
-            // Get current user by ID (more reliable than email since email might have changed)
             const user = await this.usersService.findById(req.user.profile.id);
             if (!user) {
                 throw new HttpException("Usuario no encontrado", HttpStatus.NOT_FOUND);
             }
 
-            // Verify current password using the current email from database
             const isValidPassword = await this.usersService.validateUser(user.email, changePasswordDto.current_password);
             if (!isValidPassword) {
                 throw new HttpException("Contraseña actual incorrecta", HttpStatus.UNAUTHORIZED);
             }
 
-            // Change password
             const success = await this.usersService.changePassword(user.id, changePasswordDto.new_password);
             if (!success) {
                 throw new HttpException("Error al cambiar contraseña", HttpStatus.INTERNAL_SERVER_ERROR);

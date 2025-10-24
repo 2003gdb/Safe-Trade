@@ -69,7 +69,6 @@ export class ComunidadRepository {
     }
 
     async getCommunityStats(days: number = 30): Promise<CommunityStats> {
-        // Total reports in period
         const totalSql = `
             SELECT COUNT(*) as total FROM reports
             WHERE created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
@@ -77,7 +76,6 @@ export class ComunidadRepository {
         const [totalRows] = await this.db.getPool().query(totalSql, [days]);
         const total = (totalRows as { total: number }[])[0].total;
 
-        // Most common attack type (with catalog name)
         const mostCommonSql = `
             SELECT at.name as attack_type, COUNT(*) as count
             FROM reports r
@@ -90,7 +88,6 @@ export class ComunidadRepository {
         const [mostCommonRows] = await this.db.getPool().query(mostCommonSql, [days]);
         const mostCommon = (mostCommonRows as { attack_type: string; count: number }[])[0];
 
-        // High impact reports (impact IDs: 2=robo_datos, 3=robo_dinero, 4=cuenta_comprometida)
         const highImpactSql = `
             SELECT COUNT(*) as count FROM reports
             WHERE impact IN (2, 3, 4)
@@ -99,7 +96,6 @@ export class ComunidadRepository {
         const [highImpactRows] = await this.db.getPool().query(highImpactSql, [days]);
         const highImpact = (highImpactRows as { count: number }[])[0].count;
 
-        // Anonymous percentage
         const anonymousSql = `
             SELECT
                 COUNT(CASE WHEN is_anonymous = TRUE THEN 1 END) as anonymous_count,

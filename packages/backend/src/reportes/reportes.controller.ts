@@ -56,7 +56,7 @@ export class ReportesController {
     ) {}
 
     @Post()
-    @UseGuards(AnonymousAuthGuard) // Allows both anonymous and authenticated users
+    @UseGuards(AnonymousAuthGuard)
     @ApiResponse({ status: 201, description: 'Reporte creado exitosamente' })
     @ApiResponse({ status: 400, description: 'Datos del reporte inválidos' })
     async createReporte(
@@ -64,14 +64,12 @@ export class ReportesController {
         @Req() req: AuthenticatedRequest
     ) {
         try {
-            // Determine if user is authenticated or anonymous
             const isAuthenticated = req.user.userId !== "anonymous";
             const userId = isAuthenticated ? parseInt(req.user.userId) : null;
 
-            // Create report data
             const isAnonymousReport = crearReporteDto.is_anonymous ?? !isAuthenticated;
             const reporteData = {
-                user_id: isAnonymousReport ? null : userId, // NULL for anonymous reports
+                user_id: isAnonymousReport ? null : userId,
                 is_anonymous: isAnonymousReport,
                 attack_type: crearReporteDto.attack_type,
                 incident_date: crearReporteDto.incident_date,
@@ -92,7 +90,6 @@ export class ReportesController {
                 };
             }
 
-            // Generate victim support if impact was suffered
             let victimSupport = null;
             if (reporte.impact_level !== 'ninguno') {
                 victimSupport = await this.reportesService.getVictimSupport(reporte);
@@ -147,7 +144,7 @@ export class ReportesController {
     }
 
     @Get('user/mis-reportes')
-    @UseGuards(JwtAuthGuard) // Requires authentication
+    @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
     @ApiResponse({ status: 200, description: 'Reportes del usuario obtenidos exitosamente' })
     @ApiResponse({ status: 401, description: 'Token de autenticación requerido' })
@@ -155,7 +152,6 @@ export class ReportesController {
         const userId = parseInt(req.user.userId);
         const reports = await this.reportesService.getUserReports(userId);
 
-        // Convert is_anonymous from TINYINT(0/1) to Boolean
         const convertedReports = reports.map(reporte => ({
             ...reporte,
             is_anonymous: Boolean(reporte.is_anonymous)
@@ -170,7 +166,7 @@ export class ReportesController {
     }
 
     @Get()
-    @UseGuards(AnonymousAuthGuard) // Allow both anonymous and authenticated users
+    @UseGuards(AnonymousAuthGuard)
     @ApiQuery({ name: 'status', required: false })
     @ApiQuery({ name: 'attack_type', required: false })
     @ApiQuery({ name: 'is_anonymous', required: false })
@@ -183,15 +179,13 @@ export class ReportesController {
     async getAllReports(@Query() filters: ReportFilterDto) {
         const paginatedResult = await this.reportesService.getAllReports(filters);
 
-        // Convert is_anonymous from TINYINT(0/1) to Boolean
         const convertedReports = paginatedResult.reports.map(reporte => ({
             ...reporte,
             is_anonymous: Boolean(reporte.is_anonymous)
         }));
 
-        // Return in PaginatedResponse format expected by frontend
         return {
-            data: convertedReports,  // Changed from 'reportes' to 'data'
+            data: convertedReports,
             total: paginatedResult.total,
             page: paginatedResult.page,
             limit: paginatedResult.limit,
@@ -200,7 +194,7 @@ export class ReportesController {
     }
 
     @Get(':id')
-    @UseGuards(AnonymousAuthGuard) // Allow anonymous access to view reports
+    @UseGuards(AnonymousAuthGuard)
     @ApiResponse({ status: 200, description: 'Reporte obtenido exitosamente' })
     @ApiResponse({ status: 404, description: 'Reporte no encontrado' })
     async getReporte(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
@@ -214,7 +208,6 @@ export class ReportesController {
             };
         }
 
-        // Don't expose sensitive information in anonymous reports
         const safeReporte = {
             id: reporte.id,
             attack_type: reporte.attack_type,
@@ -223,7 +216,6 @@ export class ReportesController {
             description: reporte.description,
             status: reporte.status,
             created_at: reporte.created_at,
-            // Only show user info for identified reports and if user owns it
             user_info: reporte.is_anonymous ? null : (
                 req.user.userId === reporte.user_id?.toString() ? {
                     email: reporte.user_email,
@@ -239,7 +231,7 @@ export class ReportesController {
     }
 
     @Post('upload-photo')
-    @UseGuards(AnonymousAuthGuard) // Allow both anonymous and authenticated users
+    @UseGuards(AnonymousAuthGuard)
     @UseInterceptors(FileInterceptor('photo', {
         storage: diskStorage({
             destination: './public/uploads',
@@ -249,16 +241,14 @@ export class ReportesController {
             }
         }),
         limits: {
-            fileSize: 5 * 1024 * 1024, // 5MB max file size
-            files: 1 // Only one file per request
+            fileSize: 5 * 1024 * 1024,
+            files: 1
         },
         fileFilter: (req, file, callback) => {
-            // Accept images only
             const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/heic', 'image/heif'];
             const allowedExtensions = ['.jpg', '.jpeg', '.png', '.heic', '.heif'];
             const fileExt = extname(file.originalname).toLowerCase();
 
-            // Validate both MIME type and file extension to prevent spoofing
             if (allowedMimeTypes.includes(file.mimetype) && allowedExtensions.includes(fileExt)) {
                 callback(null, true);
             } else {
@@ -278,8 +268,7 @@ export class ReportesController {
             };
         }
 
-        // Additional validation: check file size (belt and suspenders approach)
-        const maxSize = 5 * 1024 * 1024; // 5MB
+        const maxSize = 5 * 1024 * 1024;
         if (file.size > maxSize) {
             return {
                 success: false,
@@ -287,7 +276,6 @@ export class ReportesController {
             };
         }
 
-        // Return the URL path (relative to server)
         const url = `/uploads/${file.filename}`;
 
         return {

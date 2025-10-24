@@ -25,15 +25,13 @@ export interface SearchFilters extends ReportFilters {
 @Injectable()
 export class AdminService {
     constructor(
-        private readonly usersService: UsersService, // Reuse existing service
+        private readonly usersService: UsersService,
         private readonly adminRepository: AdminRepository,
         private readonly catalogMappingService: CatalogMappingService,
     ) {}
 
-    // User management methods (reusing UsersService)
     async getAllUsers() {
         const users = await this.usersService.findAll();
-        // Remove sensitive data before returning
         return users.map(user => {
             const { pass_hash: _pass_hash, salt: _salt, ...safeUser } = user;
             return safeUser;
@@ -49,12 +47,10 @@ export class AdminService {
         return null;
     }
 
-    // Dashboard statistics
     async getDashboardStats() {
         const userCount = await this.adminRepository.getUserCount();
         const reportStats = await this.adminRepository.getReportStats();
 
-        // Transform attack_types to recent_trends format for frontend compatibility
         const recentTrends = reportStats.attack_types.map(attackType => ({
             attackType: attackType.attack_type,
             count: attackType.count,
@@ -69,21 +65,17 @@ export class AdminService {
         };
     }
 
-    // Enhanced dashboard statistics
     async getEnhancedDashboardStats() {
         return await this.adminRepository.getEnhancedDashboardStats();
     }
 
-    // Report management
     async getFilteredReports(filters: ReportFilters) {
         return this.adminRepository.getFilteredReports(filters);
     }
 
-    // Admin Portal specific methods with data transformation
     async getFilteredReportsForAdmin(filters: ReportFilters) {
         const rawReports = await this.adminRepository.getFilteredReports(filters);
 
-        // Transform using centralized catalog mapping service
         return (rawReports as any[]).map(row =>
             this.catalogMappingService.transformReportSummaryForAdmin(row)
         );
@@ -93,11 +85,9 @@ export class AdminService {
         const rawReport = await this.adminRepository.updateReportStatus(reportId, status, adminNotes);
         if (!rawReport) return null;
 
-        // Transform using centralized catalog mapping service
         return this.catalogMappingService.transformReportForAdmin(rawReport);
     }
 
-    // Advanced Search and Operations
     async searchReports(searchFilters: SearchFilters) {
         const page = parseInt(searchFilters.page || '1');
         const limit = parseInt(searchFilters.limit || '10');

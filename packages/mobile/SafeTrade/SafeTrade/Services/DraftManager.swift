@@ -100,9 +100,13 @@ class DraftManager: ObservableObject {
             hasDraft = true
             draftAge = 0
 
+            #if DEBUG
             print("Draft saved successfully")
+            #endif
         } catch {
+            #if DEBUG
             print("Failed to save draft: \(error)")
+            #endif
         }
     }
 
@@ -121,7 +125,9 @@ class DraftManager: ObservableObject {
 
             return draft
         } catch {
+            #if DEBUG
             print("Failed to load draft: \(error)")
+            #endif
             clearDraft() // Clear corrupted draft
             return nil
         }
@@ -133,7 +139,9 @@ class DraftManager: ObservableObject {
         draftAge = 0
         stopAutosave()
 
+        #if DEBUG
         print("Draft cleared")
+        #endif
     }
 
     func applyDraft(to viewModel: ReportingViewModel, draft: ReportDraft) {
@@ -146,7 +154,9 @@ class DraftManager: ObservableObject {
         viewModel.messageContent = draft.messageContent
         viewModel.description = draft.description
 
+        #if DEBUG
         print("Draft applied successfully")
+        #endif
     }
 
     // MARK: - Helper Methods

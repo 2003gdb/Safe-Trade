@@ -14,9 +14,7 @@ export class AnonymousAuthGuard implements CanActivate {
         const auth = req.headers.authorization ?? "";
         const [scheme, token] = auth.split(" ");
 
-        // If no token provided, allow anonymous access
         if (scheme !== "Bearer" || !token) {
-            // Set anonymous user context
             (req as AuthenticatedRequest).user = {
                 userId: "anonymous",
                 profile: {
@@ -37,7 +35,6 @@ export class AnonymousAuthGuard implements CanActivate {
             return true;
         }
 
-        // If token is provided, validate it (for identified users)
         try {
             const payload = await this.jwtService.verifyAsync<AccessPayload>(token, {
                 secret: EnvValidationService.getJwtSecret(),
@@ -53,7 +50,6 @@ export class AnonymousAuthGuard implements CanActivate {
 
             return true;
         } catch (error) {
-            // If token is invalid, still allow anonymous access
             (req as AuthenticatedRequest).user = {
                 userId: "anonymous",
                 profile: {

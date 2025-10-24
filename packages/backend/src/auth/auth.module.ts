@@ -7,9 +7,9 @@ import { AdminRepository } from './admin.repository';
 import { UsersModule } from 'src/users/users.module';
 
 @Module({
-  imports: [forwardRef(() => UsersModule)], // Use forwardRef to avoid circular dependency
+  imports: [forwardRef(() => UsersModule)],
   controllers: [AuthController],
   providers: [AuthService, TokenService, AdminRepository],
-  exports: [AuthService, TokenService], // Export for other modules
+  exports: [AuthService, TokenService],
 })
 export class AuthModule {}

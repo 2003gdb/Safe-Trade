@@ -1,5 +1,3 @@
-// Servicio de tokens JWT - requiere JWT_SECRET configurado
-
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserProfile, AdminProfile } from "src/common/interfaces/authenticated-request";
@@ -44,7 +42,7 @@ export class TokenService {
             profile
         } satisfies AdminPayload, {
             secret: EnvValidationService.getJwtSecret(),
-            expiresIn: "4h" // Longer session for admins
+            expiresIn: "4h"
         });
     }
 
