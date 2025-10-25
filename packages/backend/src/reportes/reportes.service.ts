@@ -67,7 +67,6 @@ export class ReportesService {
     async generateRecommendations(reporte: LegacyReport): Promise<string[]> {
         const recommendations: string[] = [];
 
-        // Based on attack type
         switch (reporte.attack_type) {
             case 'email':
                 recommendations.push('Verifica siempre la dirección del remitente antes de abrir enlaces o archivos adjuntos');
@@ -100,7 +99,6 @@ export class ReportesService {
                 break;
         }
 
-        // Based on impact level
         switch (reporte.impact_level) {
             case 'robo_dinero':
                 recommendations.push('Contacta inmediatamente a tu banco para reportar el incidente');
@@ -119,13 +117,11 @@ export class ReportesService {
                 break;
         }
 
-        // Additional recommendations based on suspicious URL presence
         if (reporte.suspicious_url) {
             recommendations.push('Evita hacer clic en la URL reportada y comparte esta información con tu red');
             recommendations.push('Considera reportar la URL maliciosa a servicios de seguridad como Google Safe Browsing');
         }
 
-        // Additional recommendations based on message content
         if (reporte.message_content) {
             recommendations.push('Guarda el contenido del mensaje como evidencia para futuras investigaciones');
             const messageContent = reporte.message_content.toLowerCase();
@@ -148,7 +144,6 @@ export class ReportesService {
             resources: [] as string[]
         };
 
-        // Immediate steps based on impact
         if (reporte.impact_level === 'robo_dinero') {
             support.title = 'Pasos urgentes para víctimas de robo financiero';
             support.steps = [

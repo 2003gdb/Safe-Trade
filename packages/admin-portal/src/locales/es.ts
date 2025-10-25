@@ -1,7 +1,7 @@
-// Spanish Localization for Admin Portal
+
 
 export const es = {
-  // Authentication
+  
   login: {
     title: 'Acceso Administrativo',
     subtitle: 'Panel de Control SafeTrade',
@@ -15,7 +15,7 @@ export const es = {
     emailInvalid: 'Formato de correo electrónico inválido'
   },
 
-  // Dashboard
+  
   dashboard: {
     title: 'Panel de Control',
     welcome: 'Bienvenido al Panel Administrativo',
@@ -29,7 +29,7 @@ export const es = {
     loadingData: 'Cargando datos...'
   },
 
-  // Reports
+  
   reports: {
     title: 'Gestión de Reportes',
     listTitle: 'Lista de Reportes',
@@ -134,7 +134,7 @@ export const es = {
     }
   },
 
-  // Common
+  
   common: {
     loading: 'Cargando...',
     error: 'Error',
@@ -157,7 +157,7 @@ export const es = {
     settings: 'Configuración'
   },
 
-  // Errors
+  
   errors: {
     networkError: 'Error de conexión de red',
     unauthorized: 'No autorizado. Por favor, inicie sesión nuevamente',

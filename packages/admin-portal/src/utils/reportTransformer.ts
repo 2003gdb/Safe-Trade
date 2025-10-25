@@ -1,9 +1,4 @@
-/**
- * Report Transformer Utility
- *
- * Provides transformation functions between normalized database schema
- * and legacy admin portal format for backward compatibility.
- */
+
 
 import {
   ReportWithDetails,
@@ -21,9 +16,8 @@ export class ReportTransformer {
     this.catalogData = catalogData;
   }
 
-  /**
-   * Convert normalized report to legacy format for existing components
-   */
+  
+
   toLegacyReport(report: ReportWithDetails): LegacyReport {
     return {
       id: report.id,
@@ -33,7 +27,7 @@ export class ReportTransformer {
       impact_level: report.impact_name,
       description: report.description || '',
       attack_origin: report.attack_origin || '',
-      device_info: null, // Legacy field no longer used
+      device_info: null, 
       is_anonymous: report.is_anonymous,
       status: report.status_name,
       admin_notes: report.admin_note,
@@ -43,9 +37,8 @@ export class ReportTransformer {
     };
   }
 
-  /**
-   * Convert normalized report to legacy summary format
-   */
+  
+
   toLegacyReportSummary(report: ReportWithDetails): LegacyReportSummary {
     return {
       id: report.id,
@@ -60,9 +53,8 @@ export class ReportTransformer {
     };
   }
 
-  /**
-   * Convert legacy string-based filters to normalized ID-based filters
-   */
+  
+
   fromLegacyFilters(legacyFilters: SearchFilters): NormalizedSearchFilters {
     const normalized: NormalizedSearchFilters = {
       query: legacyFilters.query,
@@ -71,7 +63,7 @@ export class ReportTransformer {
       date_to: legacyFilters.dateTo
     };
 
-    // Convert status string to ID
+    
     if (legacyFilters.status) {
       const status = this.catalogData.statuses.find(s => s.name === legacyFilters.status);
       if (status) {
@@ -79,7 +71,7 @@ export class ReportTransformer {
       }
     }
 
-    // Convert attack type string to ID
+    
     if (legacyFilters.attackType) {
       const attackType = this.catalogData.attackTypes.find(at => at.name === legacyFilters.attackType);
       if (attackType) {
@@ -87,7 +79,7 @@ export class ReportTransformer {
       }
     }
 
-    // Convert impact level string to ID
+    
     if (legacyFilters.impactLevel) {
       const impact = this.catalogData.impacts.find(i => i.name === legacyFilters.impactLevel);
       if (impact) {
@@ -98,9 +90,8 @@ export class ReportTransformer {
     return normalized;
   }
 
-  /**
-   * Convert normalized filters back to legacy format for UI components
-   */
+  
+
   toLegacyFilters(normalizedFilters: NormalizedSearchFilters): SearchFilters {
     const legacy: SearchFilters = {
       query: normalizedFilters.query,
@@ -109,7 +100,7 @@ export class ReportTransformer {
       dateTo: normalizedFilters.date_to
     };
 
-    // Convert status ID to string
+    
     if (normalizedFilters.status) {
       const status = this.catalogData.statuses.find(s => s.id === normalizedFilters.status);
       if (status) {
@@ -117,7 +108,7 @@ export class ReportTransformer {
       }
     }
 
-    // Convert attack type ID to string
+    
     if (normalizedFilters.attack_type) {
       const attackType = this.catalogData.attackTypes.find(at => at.id === normalizedFilters.attack_type);
       if (attackType) {
@@ -125,7 +116,7 @@ export class ReportTransformer {
       }
     }
 
-    // Convert impact ID to string
+    
     if (normalizedFilters.impact) {
       const impact = this.catalogData.impacts.find(i => i.id === normalizedFilters.impact);
       if (impact) {
@@ -136,9 +127,8 @@ export class ReportTransformer {
     return legacy;
   }
 
-  /**
-   * Get display options for dropdowns from catalog data
-   */
+  
+
   getAttackTypeOptions() {
     return this.catalogData.attackTypes.map(at => ({
       value: at.id,
@@ -163,9 +153,8 @@ export class ReportTransformer {
     }));
   }
 
-  /**
-   * Get user-friendly display names for Spanish enum values
-   */
+  
+
   private getAttackTypeDisplayName(name: string): string {
     const displayNames: Record<string, string> = {
       'email': 'Email',

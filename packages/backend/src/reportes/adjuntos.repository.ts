@@ -85,7 +85,7 @@ export class AdjuntosRepository {
 
         return {
             total: (totalRows as { count: number }[])[0].count,
-            total_size: 0, // Would require filesystem integration to calculate
+            total_size: 0,
             files_with_hash: (hashRows as { count: number }[])[0].count,
         };
     }

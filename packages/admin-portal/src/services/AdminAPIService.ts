@@ -1,4 +1,4 @@
-// Admin API Service for Backend Communication
+
 
 import {
   LoginRequest,
@@ -37,11 +37,10 @@ class AdminAPIService {
   private catalogCache: CatalogData | null = null;
   private catalogMaps: CatalogMaps | null = null;
   private lastCacheTime: number = 0;
-  private readonly CACHE_TIMEOUT = 5 * 60 * 1000; // 5 minutes
+  private readonly CACHE_TIMEOUT = 5 * 60 * 1000; 
 
   constructor() {
     this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-    // Load token from localStorage if available
     if (typeof window !== 'undefined') {
       this.token = localStorage.getItem('admin_token');
     }
@@ -60,7 +59,6 @@ class AdminAPIService {
       },
       ...options,
     };
-
 
     try {
       const response = await fetch(url, config);
@@ -82,7 +80,7 @@ class AdminAPIService {
     }
   }
 
-  // Authentication Methods
+  
   async login(credentials: LoginRequest): Promise<LoginResponse> {
     try {
       const response = await this.request<{access_token: string; admin: { id: number; email: string; isAdmin: boolean; }}>('/admin/login', {
@@ -126,11 +124,11 @@ class AdminAPIService {
     return this.token;
   }
 
-  // Catalog Methods
+  
   async getCatalogs(): Promise<CatalogData> {
     const now = Date.now();
 
-    // Return cached data if valid and not expired
+    
     if (this.catalogCache && this.isCacheValid(now)) {
       return this.catalogCache;
     }
@@ -138,14 +136,14 @@ class AdminAPIService {
     try {
       const response = await this.request<{success: boolean; data: CatalogAPIResponse}>('/reportes/catalogs');
 
-      // Handle the wrapped response from backend: {success: true, data: {...}}
+      
       let catalogData: CatalogAPIResponse;
 
       if (response.data && response.data.attackTypes) {
-        // Backend returns: { success: true, data: { attackTypes: [...], impacts: [...], statuses: [...] } }
+        
         catalogData = response.data;
       } else if (response.attackTypes) {
-        // Fallback: Backend returns: { success: true, attackTypes: [...], impacts: [...], statuses: [...] }
+        
         catalogData = response as any;
       } else {
         throw new Error('Invalid catalog data structure received from API');
@@ -166,7 +164,7 @@ class AdminAPIService {
 
       return this.catalogCache;
     } catch (error) {
-      // Return default catalogs as fallback
+      
       const defaultCatalogs = CatalogUtils.createDefaultCatalogs();
       return defaultCatalogs;
     }
@@ -174,7 +172,7 @@ class AdminAPIService {
 
   async getCatalogMaps(): Promise<CatalogMaps> {
     if (!this.catalogMaps) {
-      await this.getCatalogs(); // This will create the maps
+      await this.getCatalogs(); 
     }
     return this.catalogMaps!;
   }
@@ -186,7 +184,7 @@ class AdminAPIService {
     await this.getCatalogs();
   }
 
-  // Helper methods for catalog lookups
+  
   async getAttackTypeName(id: number): Promise<string> {
     const maps = await this.getCatalogMaps();
     return maps.attackTypeMap.get(id) || 'Desconocido';
@@ -206,7 +204,7 @@ class AdminAPIService {
     return (now - this.lastCacheTime) < this.CACHE_TIMEOUT;
   }
 
-  // Dashboard Methods
+  
   async getDashboardMetrics(): Promise<DashboardMetrics> {
     const response = await this.request<{
       total_reports: number;
@@ -215,7 +213,7 @@ class AdminAPIService {
       recent_trends: Array<{ attackType: string; count: number; percentage: number }>;
     }>('/admin/dashboard');
 
-    // Transform API spec format to frontend DashboardMetrics format
+    
     return {
       totalReports: response.total_reports,
       reportsToday: response.reports_today,
@@ -225,11 +223,11 @@ class AdminAPIService {
   }
 
   async getEnhancedDashboardMetrics(): Promise<EnhancedDashboardMetrics> {
-    // Admin endpoints return consistently enriched data
+    
     return await this.request<EnhancedDashboardMetrics>('/admin/dashboard/enhanced');
   }
 
-  // Reports Methods
+  
   async getReports(params?: {
     page?: number;
     limit?: number;
@@ -249,15 +247,15 @@ class AdminAPIService {
     if (params?.dateFrom) queryParams.set('date_from', params.dateFrom);
     if (params?.dateTo) queryParams.set('date_to', params.dateTo);
 
-    // Use public reportes endpoint which provides complete data with string values
+    
     const endpoint = `/reportes${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
 
-    // Reportes endpoint returns complete data with string values already
+    
     return await this.request<PaginatedResponse<ReportSummary>>(endpoint);
   }
 
   async getReportById(id: number): Promise<Report> {
-    // Use admin-specific endpoint for consistent data transformation
+    
     return this.request<Report>(`/admin/reports/${id}`);
   }
 
@@ -268,7 +266,7 @@ class AdminAPIService {
     });
   }
 
-  // Advanced Search Methods
+  
   async searchReports(filters: SearchFilters, page: number = 1, limit: number = 10): Promise<PaginatedResponse<SearchResult>> {
     const queryParams = new URLSearchParams();
 
@@ -288,7 +286,7 @@ class AdminAPIService {
       const endpoint = `/admin/reports/search?${queryParams.toString()}`;
       return await this.request<PaginatedResponse<SearchResult>>(endpoint);
     } catch (error) {
-      // Fallback to basic reports with client-side filtering if search endpoint doesn't exist
+      
 
       const basicFilters = {
         page,
@@ -301,7 +299,7 @@ class AdminAPIService {
 
       const response = await this.getReports(basicFilters);
 
-      // Convert ReportSummary to SearchResult format
+      
       const searchResults: SearchResult[] = response.data.map(report => ({
         ...report,
         highlights: filters.query ? {
@@ -329,9 +327,9 @@ class AdminAPIService {
     return Math.min(score, 1.0);
   }
 
-  // Search History Management
+  
   async getSearchHistory(): Promise<SearchHistory[]> {
-    // For now, use localStorage for search history
+    
     if (typeof window !== 'undefined') {
       const history = localStorage.getItem('admin_search_history');
       return history ? JSON.parse(history) : [];
@@ -350,7 +348,7 @@ class AdminAPIService {
         resultCount
       };
 
-      // Keep only last 50 searches
+      
       const updatedHistory = [newEntry, ...history.slice(0, 49)];
       localStorage.setItem('admin_search_history', JSON.stringify(updatedHistory));
     }
@@ -362,7 +360,7 @@ class AdminAPIService {
     }
   }
 
-  // Saved Searches Management
+  
   async getSavedSearches(): Promise<SavedSearch[]> {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('admin_saved_searches');
@@ -396,13 +394,12 @@ class AdminAPIService {
     }
   }
 
-
-  // Admin Notes Methods
+  
   async getReportNotes(reportId: number): Promise<AdminNote[]> {
     try {
       return await this.request<AdminNote[]>(`/admin/reports/${reportId}/notes`);
     } catch (error) {
-      // Fallback to empty notes if endpoint doesn't exist
+      
       return [];
     }
   }
@@ -414,7 +411,7 @@ class AdminAPIService {
         body: JSON.stringify({ content, isTemplate, templateName }),
       });
     } catch (error) {
-      // Fallback to creating a mock note for UI consistency
+      
       const mockNote: AdminNote = {
         id: Date.now(),
         reportId,
@@ -451,7 +448,7 @@ class AdminAPIService {
     }
   }
 
-  // Note Templates
+  
   async getNoteTemplates(): Promise<NoteTemplate[]> {
     if (typeof window !== 'undefined') {
       const templates = localStorage.getItem('admin_note_templates');
@@ -512,7 +509,7 @@ class AdminAPIService {
     }
   }
 
-  // Utility Methods
+  
   setToken(token: string): void {
     this.token = token;
     if (typeof window !== 'undefined') {
@@ -531,5 +528,4 @@ class AdminAPIService {
   }
 }
 
-// Export singleton instance
 export const adminAPIService = new AdminAPIService();

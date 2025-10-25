@@ -53,7 +53,7 @@ export default function ReportsFilter({ filters, onFilterChange }: ReportsFilter
   return (
     <div className="bg-white p-4 rounded-lg shadow mb-6">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        {/* Status Filter */}
+        {}
         <div>
           <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
             {es.reports.filterByStatus}
@@ -72,7 +72,7 @@ export default function ReportsFilter({ filters, onFilterChange }: ReportsFilter
           </select>
         </div>
 
-        {/* Attack Type Filter */}
+        {}
         <div>
           <label htmlFor="attackType" className="block text-sm font-medium text-gray-700 mb-1">
             {es.reports.filterByAttackType}
@@ -93,8 +93,7 @@ export default function ReportsFilter({ filters, onFilterChange }: ReportsFilter
           </select>
         </div>
 
-
-        {/* Anonymous Filter */}
+        {}
         <div>
           <label htmlFor="isAnonymous" className="block text-sm font-medium text-gray-700 mb-1">
             Tipo de Usuario
@@ -111,7 +110,7 @@ export default function ReportsFilter({ filters, onFilterChange }: ReportsFilter
           </select>
         </div>
 
-        {/* Date From Filter */}
+        {}
         <div>
           <label htmlFor="dateFrom" className="block text-sm font-medium text-gray-700 mb-1">
             Fecha Desde
@@ -125,7 +124,7 @@ export default function ReportsFilter({ filters, onFilterChange }: ReportsFilter
           />
         </div>
 
-        {/* Date To Filter */}
+        {}
         <div>
           <label htmlFor="dateTo" className="block text-sm font-medium text-gray-700 mb-1">
             Fecha Hasta
@@ -140,7 +139,7 @@ export default function ReportsFilter({ filters, onFilterChange }: ReportsFilter
         </div>
       </div>
 
-      {/* Clear Filters Button */}
+      {}
       <div className="mt-4 flex justify-end">
         <button
           onClick={clearFilters}
@@ -150,7 +149,7 @@ export default function ReportsFilter({ filters, onFilterChange }: ReportsFilter
         </button>
       </div>
 
-      {/* Active Filters Display */}
+      {}
       {(filters.status || filters.attackType || filters.isAnonymous || filters.dateFrom || filters.dateTo) && (
         <div className="mt-4 pt-4 border-t border-gray-200">
           <div className="flex flex-wrap gap-2">

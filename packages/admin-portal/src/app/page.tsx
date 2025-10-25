@@ -18,7 +18,7 @@ export default function Home() {
     }
   }, [isAuthenticated, isLoading, router]);
 
-  // Show loading while determining where to redirect
+  
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24">
       <div className="flex flex-col items-center">

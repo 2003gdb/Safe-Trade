@@ -4,7 +4,6 @@ import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { AdminUser, LoginRequest } from '../types';
 import { adminAPIService } from '../services/AdminAPIService';
 
-// Auth State Types
 interface AuthState {
   user: AdminUser | null;
   isAuthenticated: boolean;
@@ -18,7 +17,6 @@ interface AuthContextType extends AuthState {
   clearError: () => void;
 }
 
-// Auth Actions
 type AuthAction =
   | { type: 'LOGIN_START' }
   | { type: 'LOGIN_SUCCESS'; payload: AdminUser }
@@ -27,7 +25,6 @@ type AuthAction =
   | { type: 'CLEAR_ERROR' }
   | { type: 'SET_LOADING'; payload: boolean };
 
-// Initial State
 const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
@@ -35,7 +32,6 @@ const initialState: AuthState = {
   error: null,
 };
 
-// Reducer
 function authReducer(state: AuthState, action: AuthAction): AuthState {
   switch (action.type) {
     case 'LOGIN_START':
@@ -83,14 +79,12 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
   }
 }
 
-// Create Context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Auth Provider Component
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Check for existing token on mount
+  
   useEffect(() => {
     const checkExistingAuth = async () => {
       dispatch({ type: 'SET_LOADING', payload: true });
@@ -100,9 +94,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (token) {
           const isValid = await adminAPIService.validateToken();
           if (isValid) {
-            // If we have a valid token but no user data, we might need to fetch it
-            // For now, we'll assume the token is valid and create a minimal user object
-            // In a real implementation, you might want to fetch user details
+            
+            
+            
             const userData: AdminUser = {
               id: 0,
               email: 'admin@safetrade.com',
@@ -127,7 +121,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     checkExistingAuth();
   }, []);
 
-  // Login function
+  
   const login = async (credentials: LoginRequest) => {
     dispatch({ type: 'LOGIN_START' });
 
@@ -141,13 +135,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Logout function
+  
   const logout = () => {
     adminAPIService.logout();
     dispatch({ type: 'LOGOUT' });
   };
 
-  // Clear error function
+  
   const clearError = () => {
     dispatch({ type: 'CLEAR_ERROR' });
   };
@@ -166,7 +160,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-// Custom hook to use auth context
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
   if (context === undefined) {

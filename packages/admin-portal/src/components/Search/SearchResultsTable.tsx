@@ -123,7 +123,7 @@ export default function SearchResultsTable({
           <li key={result.id} className="px-4 py-4 hover:bg-gray-50">
             <div className="flex items-start space-x-4">
 
-              {/* Content */}
+              {}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
@@ -177,7 +177,7 @@ export default function SearchResultsTable({
                     </div>
                   </div>
 
-                  {/* Highlights */}
+                  {}
                   {result.highlights && (
                     <div className="mt-2 p-2 bg-yellow-50 rounded-md">
                       <div className="text-xs font-medium text-gray-700 mb-1">

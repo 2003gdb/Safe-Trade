@@ -1,9 +1,4 @@
-/**
- * Catalog Service for Admin Portal
- *
- * Manages catalog data loading, caching, and conversion operations.
- * Provides a clean interface for components to access catalog information.
- */
+
 
 import {
   CatalogData,
@@ -24,25 +19,24 @@ export class CatalogService {
 
   constructor(config: CatalogServiceConfig) {
     this.config = {
-      cacheTimeout: 5 * 60 * 1000, // 5 minutes default
+      cacheTimeout: 5 * 60 * 1000, 
       retryAttempts: 3,
       retryDelay: 1000,
       ...config
     };
   }
 
-  /**
-   * Get catalog data with caching
-   */
+  
+
   async getCatalogs(): Promise<CatalogData> {
     const now = Date.now();
 
-    // Return cached data if valid and not expired
+    
     if (this.catalogCache && this.isCacheValid(now)) {
       return this.catalogCache;
     }
 
-    // Load fresh data
+    
     const catalogs = await this.loadCatalogsFromAPI();
     this.catalogCache = catalogs;
     this.catalogMaps = this.createCatalogMaps(catalogs);
@@ -51,19 +45,17 @@ export class CatalogService {
     return catalogs;
   }
 
-  /**
-   * Get catalog maps for quick lookups
-   */
+  
+
   async getCatalogMaps(): Promise<CatalogMaps> {
     if (!this.catalogMaps) {
-      await this.getCatalogs(); // This will create the maps
+      await this.getCatalogs(); 
     }
     return this.catalogMaps!;
   }
 
-  /**
-   * Load catalogs from API with retry logic
-   */
+  
+
   private async loadCatalogsFromAPI(): Promise<CatalogData> {
     let lastError: Error | null = null;
 
@@ -77,19 +69,19 @@ export class CatalogService {
 
         const rawData = await response.json();
 
-        // Handle the wrapped response from backend: {success: true, data: {...}}
+        
         let catalogData: CatalogAPIResponse;
 
         if (rawData.success && rawData.data) {
           catalogData = rawData.data;
         } else if (rawData.attackTypes) {
-          // Fallback for direct response format
+          
           catalogData = rawData;
         } else {
           throw new Error('Invalid catalog response structure');
         }
 
-        // Validate the response structure
+        
         if (!this.isValidCatalogResponse(catalogData)) {
           throw new Error('Invalid catalog response structure');
         }
@@ -111,9 +103,8 @@ export class CatalogService {
     throw this.createCatalogError('network', `Failed to load catalogs after ${this.config.retryAttempts} attempts`, lastError!);
   }
 
-  /**
-   * Create maps for efficient lookups
-   */
+  
+
   private createCatalogMaps(catalogs: CatalogData): CatalogMaps {
     return {
       attackTypeMap: new Map(catalogs.attackTypes.map(at => [at.id, at.name])),
@@ -125,9 +116,8 @@ export class CatalogService {
     };
   }
 
-  /**
-   * Get display name by ID
-   */
+  
+
   async getDisplayName(type: CatalogType, id: number): Promise<string> {
     const maps = await this.getCatalogMaps();
 
@@ -143,9 +133,8 @@ export class CatalogService {
     }
   }
 
-  /**
-   * Get ID by name
-   */
+  
+
   async getId(type: CatalogType, name: string): Promise<number | null> {
     const maps = await this.getCatalogMaps();
 
@@ -161,9 +150,8 @@ export class CatalogService {
     }
   }
 
-  /**
-   * Get options for dropdowns
-   */
+  
+
   async getAttackTypeOptions(): Promise<CatalogOption[]> {
     const catalogs = await this.getCatalogs();
     return catalogs.attackTypes.map(at => ({
@@ -191,9 +179,8 @@ export class CatalogService {
     }));
   }
 
-  /**
-   * Convert legacy strings to IDs
-   */
+  
+
   async convertLegacyAttackType(legacyValue: string): Promise<number | null> {
     return this.getId('attackTypes', legacyValue);
   }
@@ -206,9 +193,8 @@ export class CatalogService {
     return this.getId('statuses', legacyValue);
   }
 
-  /**
-   * Clear cache and force reload
-   */
+  
+
   async refreshCatalogs(): Promise<CatalogData> {
     this.catalogCache = null;
     this.catalogMaps = null;
@@ -216,9 +202,8 @@ export class CatalogService {
     return this.getCatalogs();
   }
 
-  /**
-   * Helper methods for display names
-   */
+  
+
   private getAttackTypeDisplayName(name: string): string {
     const displayNames: Record<string, string> = {
       'email': 'Email',
@@ -251,9 +236,8 @@ export class CatalogService {
     return displayNames[name] || name;
   }
 
-  /**
-   * Utility methods
-   */
+  
+
   private isCacheValid(now: number): boolean {
     return (now - this.lastCacheTime) < this.config.cacheTimeout!;
   }
@@ -283,7 +267,6 @@ export class CatalogService {
   }
 }
 
-// Create singleton instance for the admin portal
 const catalogService = new CatalogService({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
 });

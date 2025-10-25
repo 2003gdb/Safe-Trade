@@ -1,9 +1,4 @@
-/**
- * Catalog Context Provider
- *
- * Provides global state management for catalog data across the admin portal.
- * Ensures catalogs are loaded once and shared between components.
- */
+
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import catalogService from '../services/CatalogService';
@@ -73,9 +68,6 @@ export function CatalogProvider({ children }: CatalogProviderProps) {
   );
 }
 
-/**
- * Hook to use the catalog context
- */
 export function useCatalogContext(): CatalogContextType {
   const context = useContext(CatalogContext);
 
@@ -86,9 +78,6 @@ export function useCatalogContext(): CatalogContextType {
   return context;
 }
 
-/**
- * Hook to get catalog display names by ID
- */
 export function useCatalogDisplayNames() {
   const { maps, loading } = useCatalogContext();
 
@@ -115,9 +104,6 @@ export function useCatalogDisplayNames() {
   };
 }
 
-/**
- * Hook to get catalog IDs by name
- */
 export function useCatalogIds() {
   const { maps, loading } = useCatalogContext();
 
@@ -144,9 +130,6 @@ export function useCatalogIds() {
   };
 }
 
-/**
- * Hook to get catalog options for dropdowns
- */
 export function useCatalogOptions() {
   const { catalogs, loading } = useCatalogContext();
 
@@ -177,7 +160,7 @@ export function useCatalogOptions() {
     }));
   };
 
-  // Helper functions for display names
+  
   const getAttackTypeDisplayName = (name: string): string => {
     const displayNames: Record<string, string> = {
       'email': 'Email',

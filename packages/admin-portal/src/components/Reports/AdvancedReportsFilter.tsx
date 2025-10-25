@@ -25,7 +25,7 @@ export default function AdvancedReportsFilter({
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [activePreset, setActivePreset] = useState<string>('');
 
-  // Filter presets for common workflows
+  
   const presets = {
     critical_today: {
       name: 'Críticos de Hoy',
@@ -113,7 +113,7 @@ export default function AdvancedReportsFilter({
     if (preset) {
       const newFilters: SearchFilters = {};
 
-      // Convert preset filters to SearchFilters format
+      
       Object.entries(preset.filters).forEach(([key, value]) => {
         if (key === 'isAnonymous') {
           newFilters[key] = value as boolean;
@@ -251,7 +251,7 @@ export default function AdvancedReportsFilter({
 
   return (
     <div className="bg-white p-4 rounded-lg shadow mb-6">
-      {/* Filter Presets */}
+      {}
       <div className="mb-4">
         <h4 className="text-sm font-medium text-gray-700 mb-2">Filtros Predefinidos</h4>
         <div className="flex flex-wrap gap-2">
@@ -271,9 +271,9 @@ export default function AdvancedReportsFilter({
         </div>
       </div>
 
-      {/* Basic Filters */}
+      {}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-4">
-        {/* Status */}
+        {}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             {es.reports.filterByStatus}
@@ -291,7 +291,7 @@ export default function AdvancedReportsFilter({
           </select>
         </div>
 
-        {/* Attack Type */}
+        {}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             {es.reports.filterByAttackType}
@@ -311,7 +311,7 @@ export default function AdvancedReportsFilter({
           </select>
         </div>
 
-        {/* Impact Level */}
+        {}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Nivel de Impacto
@@ -329,7 +329,7 @@ export default function AdvancedReportsFilter({
           </select>
         </div>
 
-        {/* Anonymous Filter */}
+        {}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Tipo de Usuario
@@ -348,7 +348,7 @@ export default function AdvancedReportsFilter({
         </div>
       </div>
 
-      {/* Date Range */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -374,7 +374,7 @@ export default function AdvancedReportsFilter({
         </div>
       </div>
 
-      {/* Advanced Filter Builder */}
+      {}
       <div className="border-t border-gray-200 pt-4">
         <div className="flex items-center justify-between mb-4">
           <h4 className="text-sm font-medium text-gray-700">
@@ -392,7 +392,7 @@ export default function AdvancedReportsFilter({
           <div className="space-y-4">
             {filterCriteria.map((criteria, index) => (
               <div key={index} className="flex items-center space-x-2 p-3 bg-gray-50 rounded-md">
-                {/* Logic Operator */}
+                {}
                 {index > 0 && (
                   <select
                     value={criteria.logic || 'AND'}
@@ -404,7 +404,7 @@ export default function AdvancedReportsFilter({
                   </select>
                 )}
 
-                {/* Field */}
+                {}
                 <select
                   value={criteria.field}
                   onChange={(e) => updateFilterCriteria(index, { field: e.target.value })}
@@ -415,7 +415,7 @@ export default function AdvancedReportsFilter({
                   ))}
                 </select>
 
-                {/* Operator */}
+                {}
                 <select
                   value={criteria.operator}
                   onChange={(e) => updateFilterCriteria(index, { operator: e.target.value as any })}
@@ -426,12 +426,12 @@ export default function AdvancedReportsFilter({
                   ))}
                 </select>
 
-                {/* Value */}
+                {}
                 <div className="flex-1">
                   {renderValueInput(criteria, index)}
                 </div>
 
-                {/* Remove Button */}
+                {}
                 <button
                   onClick={() => removeFilterCriteria(index)}
                   className="text-red-600 hover:text-red-800"
@@ -458,7 +458,7 @@ export default function AdvancedReportsFilter({
         )}
       </div>
 
-      {/* Actions */}
+      {}
       <div className="flex justify-between items-center pt-4 border-t border-gray-200">
         <button
           onClick={clearAllFilters}

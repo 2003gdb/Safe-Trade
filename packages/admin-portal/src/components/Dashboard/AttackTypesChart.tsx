@@ -12,7 +12,7 @@ interface AttackTypesChartProps {
 export default function AttackTypesChart({ data, isLoading }: AttackTypesChartProps) {
   const { getAttackTypeName, loading: catalogLoading } = useCatalogDisplayNames();
 
-  // Helper function to get user-friendly display names
+  
   const getDisplayName = (name: string): string => {
     const displayNames: Record<string, string> = {
       'email': 'Email',
@@ -25,7 +25,7 @@ export default function AttackTypesChart({ data, isLoading }: AttackTypesChartPr
     return displayNames[name] || name;
   };
 
-  // Show loading if either chart data or catalog data is loading
+  
   if (isLoading || catalogLoading) {
     return (
       <div className="bg-white/70 backdrop-blur-sm shadow border border-safetrade-blue/30 p-6">
@@ -41,23 +41,23 @@ export default function AttackTypesChart({ data, isLoading }: AttackTypesChartPr
   }
 
   const chartData = data.map(item => {
-    // Handle both old format (attack_type string) and new format (attack_type + attack_type_name)
+    
     let displayName = '';
 
-    // Check if item has the new normalized format properties
+    
     const normalizedItem = item as any;
 
     if (normalizedItem.attack_type_name && normalizedItem.attack_type_name !== 'Desconocido') {
-      // New format with pre-enriched name from backend
+      
       displayName = getDisplayName(normalizedItem.attack_type_name);
     } else if (normalizedItem.attack_type && typeof normalizedItem.attack_type === 'number') {
-      // New format with ID - use catalog lookup
+      
       displayName = getAttackTypeName(normalizedItem.attack_type);
     } else if (item.attack_type && typeof item.attack_type === 'string') {
-      // Legacy format - fallback to string value
+      
       displayName = getDisplayName(item.attack_type);
     } else {
-      // Fallback if no recognized format
+      
       displayName = 'Desconocido';
     }
 

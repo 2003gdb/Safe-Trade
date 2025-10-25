@@ -24,12 +24,12 @@ export default function StatusUpdateModal({
   const [error, setError] = useState<string | null>(null);
   const [statusHistory, setStatusHistory] = useState<AdminNote[]>([]);
 
-  // Status transition rules
+  
   const statusTransitions = {
     nuevo: ['revisado', 'en_investigacion', 'cerrado'],
     revisado: ['en_investigacion', 'cerrado'],
     en_investigacion: ['revisado', 'cerrado'],
-    cerrado: ['en_investigacion'] // Can reopen if needed
+    cerrado: ['en_investigacion'] 
   };
 
   const statusColors = {
@@ -165,7 +165,7 @@ Fecha de cambio: ${new Date().toLocaleString('es-ES')}`;
         adminNotes: fullNotes
       });
 
-      // Add status change note
+      
       await adminAPIService.addReportNote(
         report.id,
         `Estado cambiado de "${statusLabels[report.status as keyof typeof statusLabels]}" a "${statusLabels[selectedStatus as keyof typeof statusLabels]}"`,
@@ -193,7 +193,7 @@ Fecha de cambio: ${new Date().toLocaleString('es-ES')}`;
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
       <div className="relative top-20 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white">
-        {/* Header */}
+        {}
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-lg font-bold text-gray-900">
             Actualizar Estado del Reporte #{report.id}
@@ -208,7 +208,7 @@ Fecha de cambio: ${new Date().toLocaleString('es-ES')}`;
           </button>
         </div>
 
-        {/* Current Status */}
+        {}
         <div className="mb-6">
           <h4 className="text-sm font-medium text-gray-700 mb-2">Estado Actual</h4>
           <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${statusColors[report.status as keyof typeof statusColors]}`}>
@@ -219,7 +219,7 @@ Fecha de cambio: ${new Date().toLocaleString('es-ES')}`;
           </p>
         </div>
 
-        {/* New Status Selection */}
+        {}
         <div className="mb-6">
           <h4 className="text-sm font-medium text-gray-700 mb-2">Nuevo Estado</h4>
           {availableStatuses.length > 0 ? (
@@ -252,7 +252,7 @@ Fecha de cambio: ${new Date().toLocaleString('es-ES')}`;
           )}
         </div>
 
-        {/* Status Change Reason */}
+        {}
         {selectedStatus !== report.status && (
           <div className="mb-4">
             <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
@@ -263,13 +263,13 @@ Fecha de cambio: ${new Date().toLocaleString('es-ES')}`;
           </div>
         )}
 
-        {/* Admin Notes */}
+        {}
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Notas Administrativas *
           </label>
 
-          {/* Template Suggestions */}
+          {}
           {relevantTemplates.length > 0 && (
             <div className="mb-3">
               <p className="text-xs text-gray-500 mb-2">Plantillas sugeridas:</p>
@@ -299,8 +299,7 @@ Fecha de cambio: ${new Date().toLocaleString('es-ES')}`;
           </p>
         </div>
 
-
-        {/* Status History */}
+        {}
         {statusHistory.length > 0 && (
           <div className="mb-6">
             <h4 className="text-sm font-medium text-gray-700 mb-2">Historial de Estados</h4>
@@ -317,14 +316,14 @@ Fecha de cambio: ${new Date().toLocaleString('es-ES')}`;
           </div>
         )}
 
-        {/* Error Message */}
+        {}
         {error && (
           <div className="mb-4 p-3 rounded-md bg-red-50 border border-red-200">
             <p className="text-sm text-red-800">{error}</p>
           </div>
         )}
 
-        {/* Actions */}
+        {}
         <div className="flex justify-end space-x-3">
           <button
             onClick={onClose}

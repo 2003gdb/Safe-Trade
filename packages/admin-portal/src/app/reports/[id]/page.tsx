@@ -25,15 +25,13 @@ function ReportDetailContent({ params }: ReportDetailPageProps) {
   const router = useRouter();
   const reportId = parseInt(params.id);
 
-  // Get API URL from environment variable with fallback
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-  // Use catalog context for display names
   const { loading: catalogLoading } = useCatalogDisplayNames();
 
-  // Helper function to get display names with fallback
+  
   const getDisplayName = (type: 'attackTypes' | 'impacts' | 'statuses', value: string): string => {
-    // First try to get user-friendly display names
+    
     const displayNames = {
       attackTypes: {
         'email': 'Email',
@@ -124,7 +122,7 @@ function ReportDetailContent({ params }: ReportDetailPageProps) {
     }
   };
 
-  // Show loading if either report data or catalog data is loading
+  
   if (isLoading || catalogLoading) {
     return (
       <ProtectedRoute>
@@ -176,7 +174,7 @@ function ReportDetailContent({ params }: ReportDetailPageProps) {
         <Header />
 
         <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          {/* Page Header */}
+          {}
           <div className="px-4 py-6 sm:px-0">
             <div className="flex justify-between items-center">
               <div>
@@ -204,12 +202,12 @@ function ReportDetailContent({ params }: ReportDetailPageProps) {
             </div>
           </div>
 
-          {/* Report Details */}
+          {}
           <div className="px-4 sm:px-0">
             <div className="bg-white overflow-hidden shadow rounded-lg">
               <div className="px-4 py-5 sm:p-6">
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  {/* Basic Information */}
+                  {}
                   <div className="space-y-4">
                     <h3 className="text-lg font-medium text-gray-900">Información Básica</h3>
 
@@ -258,7 +256,7 @@ function ReportDetailContent({ params }: ReportDetailPageProps) {
                     </div>
                   </div>
 
-                  {/* Additional Information */}
+                  {}
                   <div className="space-y-4">
                     <h3 className="text-lg font-medium text-gray-900">Información Adicional</h3>
 
@@ -292,7 +290,7 @@ function ReportDetailContent({ params }: ReportDetailPageProps) {
                   </div>
                 </div>
 
-                {/* Description */}
+                {}
                 <div className="mt-6">
                   <h3 className="text-lg font-medium text-gray-900 mb-3">Descripción del Incidente</h3>
                   <div className="bg-gray-50 rounded-lg p-4">
@@ -302,7 +300,7 @@ function ReportDetailContent({ params }: ReportDetailPageProps) {
                   </div>
                 </div>
 
-                {/* Admin Notes */}
+                {}
                 {report.admin_notes && (
                   <div className="mt-6">
                     <h3 className="text-lg font-medium text-gray-900 mb-3">Notas Administrativas</h3>
@@ -314,7 +312,7 @@ function ReportDetailContent({ params }: ReportDetailPageProps) {
                   </div>
                 )}
 
-                {/* Evidence Photo */}
+                {}
                 {report.evidence_url && (
                   <div className="mt-6">
                     <h3 className="text-lg font-medium text-gray-900 mb-3">Evidencia Fotográfica</h3>
@@ -348,7 +346,7 @@ function ReportDetailContent({ params }: ReportDetailPageProps) {
           </div>
         </main>
 
-        {/* Status Update Modal */}
+        {}
         {report && (
           <StatusUpdateModal
             isOpen={showStatusModal}

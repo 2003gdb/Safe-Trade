@@ -10,16 +10,16 @@ interface ImpactChartProps {
 }
 
 const IMPACT_COLORS = {
-  'ninguno': '#10B981',           // Green - No Impact (status-accepted)
-  'robo_datos': '#F59E0B',        // Amber - Data Theft (status-progress)
-  'robo_dinero': '#EF4444',       // Red - Money Theft (status-rejected)
-  'cuenta_comprometida': '#A1CDF4' // SafeTrade Blue - Account Compromised
+  'ninguno': '#10B981',           
+  'robo_datos': '#F59E0B',        
+  'robo_dinero': '#EF4444',       
+  'cuenta_comprometida': '#A1CDF4' 
 };
 
 export default function ImpactChart({ data, isLoading }: ImpactChartProps) {
   const { getImpactName, loading: catalogLoading } = useCatalogDisplayNames();
 
-  // Helper function to get user-friendly display names
+  
   const getDisplayName = (name: string): string => {
     const displayNames: Record<string, string> = {
       'ninguno': 'Sin Impacto',
@@ -30,7 +30,7 @@ export default function ImpactChart({ data, isLoading }: ImpactChartProps) {
     return displayNames[name] || name;
   };
 
-  // Show loading if either chart data or catalog data is loading
+  
   if (isLoading || catalogLoading) {
     return (
       <div className="bg-white/70 backdrop-blur-sm shadow border border-safetrade-blue/30 p-6">
@@ -46,27 +46,27 @@ export default function ImpactChart({ data, isLoading }: ImpactChartProps) {
   }
 
   const chartData = data.map(item => {
-    // Handle both old format (impact_level string) and new format (impact + impact_name)
+    
     let displayName = '';
     let impactKey = '';
 
-    // Check if item has the new normalized format properties
+    
     const normalizedItem = item as any;
 
     if (normalizedItem.impact_name && normalizedItem.impact_name !== 'Desconocido') {
-      // New format with pre-enriched name from backend
+      
       displayName = getDisplayName(normalizedItem.impact_name);
       impactKey = normalizedItem.impact_name;
     } else if (normalizedItem.impact && typeof normalizedItem.impact === 'number') {
-      // New format with ID - use catalog lookup
+      
       displayName = getImpactName(normalizedItem.impact);
       impactKey = getImpactName(normalizedItem.impact);
     } else if (item.impact_level && typeof item.impact_level === 'string') {
-      // Legacy format - fallback to string value
+      
       displayName = getDisplayName(item.impact_level);
       impactKey = item.impact_level;
     } else {
-      // Fallback if no recognized format
+      
       displayName = 'Desconocido';
       impactKey = 'unknown';
     }

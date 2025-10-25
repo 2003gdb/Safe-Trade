@@ -80,9 +80,6 @@ export class CatalogRepository {
     return { attackTypes, impacts, statuses };
   }
 
-  /**
-   * Convert legacy enum value to foreign key ID
-   */
   async convertLegacyAttackType(legacyValue: string): Promise<number | null> {
     const attackType = await this.getAttackTypeByName(legacyValue);
     return attackType?.id || null;

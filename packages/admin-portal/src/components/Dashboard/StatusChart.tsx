@@ -10,16 +10,16 @@ interface StatusChartProps {
 }
 
 const STATUS_COLORS = {
-  'nuevo': '#EF4444',       // Red - New/Urgent (status-rejected)
-  'revisado': '#F59E0B',    // Amber - Under Review (status-progress)
-  'en_investigacion': '#A1CDF4', // SafeTrade Blue - In Progress
-  'cerrado': '#10B981'      // Green - Resolved (status-accepted)
+  'nuevo': '#EF4444',       
+  'revisado': '#F59E0B',    
+  'en_investigacion': '#A1CDF4', 
+  'cerrado': '#10B981'      
 };
 
 export default function StatusChart({ data, isLoading }: StatusChartProps) {
   const { getStatusName, loading: catalogLoading } = useCatalogDisplayNames();
 
-  // Helper function to get user-friendly display names
+  
   const getDisplayName = (name: string): string => {
     const displayNames: Record<string, string> = {
       'nuevo': 'Nuevo',
@@ -30,7 +30,7 @@ export default function StatusChart({ data, isLoading }: StatusChartProps) {
     return displayNames[name] || name;
   };
 
-  // Show loading if either chart data or catalog data is loading
+  
   if (isLoading || catalogLoading) {
     return (
       <div className="bg-white/70 backdrop-blur-sm shadow border border-safetrade-blue/30 p-6">
@@ -46,27 +46,27 @@ export default function StatusChart({ data, isLoading }: StatusChartProps) {
   }
 
   const chartData = data.map(item => {
-    // Handle both old format (status string) and new format (status + status_name)
+    
     let displayName = '';
     let statusKey = '';
 
-    // Check if item has the new normalized format properties
+    
     const normalizedItem = item as any;
 
     if (normalizedItem.status_name && normalizedItem.status_name !== 'Desconocido') {
-      // New format with pre-enriched name from backend
+      
       displayName = getDisplayName(normalizedItem.status_name);
       statusKey = normalizedItem.status_name;
     } else if (normalizedItem.status && typeof normalizedItem.status === 'number') {
-      // New format with ID - use catalog lookup
+      
       displayName = getStatusName(normalizedItem.status);
       statusKey = getStatusName(normalizedItem.status);
     } else if (item.status && typeof item.status === 'string') {
-      // Legacy format - fallback to string value
+      
       displayName = getDisplayName(item.status);
       statusKey = item.status;
     } else {
-      // Fallback if no recognized format
+      
       displayName = 'Desconocido';
       statusKey = 'unknown';
     }

@@ -19,7 +19,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     }
   }, [isAuthenticated, isLoading, router]);
 
-  // Show loading spinner while checking authentication
+  
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -31,11 +31,11 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     );
   }
 
-  // Show nothing while redirecting to login
+  
   if (!isAuthenticated) {
     return null;
   }
 
-  // Render protected content
+  
   return <>{children}</>;
 }

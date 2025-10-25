@@ -12,7 +12,6 @@ import { ReportSummary } from '../../types';
 import { es } from '../../locales/es';
 
 export default function ReportsPage() {
-  // Add render counter for debugging
   const renderCount = useRef(0);
   renderCount.current += 1;
 
@@ -34,25 +33,11 @@ export default function ReportsPage() {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // Debug state changes
-  console.log('📊 Current state:', {
-    renderCount: renderCount.current,
-    filtersStatus: filters.status,
-    filtersAttackType: filters.attackType,
-    filtersIsAnonymous: filters.isAnonymous,
-    paginationPage: pagination.page,
-    paginationTotal: pagination.total,
-    reportsLength: reports.length,
-    isLoading
-  });
-
-  // Use refs to track values without triggering re-renders
   const currentPaginationRef = useRef(pagination);
   const currentFiltersRef = useRef(filters);
   const loadingRef = useRef(false);
   const router = useRouter();
 
-  // Update refs when state changes
   useEffect(() => {
     currentPaginationRef.current = pagination;
   }, [pagination]);
@@ -82,10 +67,9 @@ export default function ReportsPage() {
       const response = await adminAPIService.getReports(params);
       setReports(response.data);
 
-      // Only update pagination if it actually changed
       setPagination(prev => {
         if (prev.total === response.total && prev.totalPages === response.totalPages) {
-          return prev; // Return same object to prevent re-render
+          return prev;
         }
         return {
           ...prev,
@@ -99,28 +83,20 @@ export default function ReportsPage() {
       setIsLoading(false);
       loadingRef.current = false;
     }
-  }, []); // Empty dependencies - uses refs
+  }, []);
 
-
-  // Single effect for initial load only
   useEffect(() => {
-    console.log('🎯 useEffect (mount) triggered', {
-      renderCount: renderCount.current
-    });
     loadReports();
-  }, [loadReports]); // Include loadReports dependency
-
+  }, [loadReports]);
 
   const handleFilterChange = (newFilters: typeof filters) => {
     setFilters(newFilters);
-    setPagination(prev => ({ ...prev, page: 1 })); // Reset to first page when filtering
-    // Manually trigger reload when filters change
+    setPagination(prev => ({ ...prev, page: 1 }));
     setTimeout(() => loadReports(), 0);
   };
 
   const handlePageChange = (page: number) => {
     setPagination(prev => ({ ...prev, page }));
-    // Manually trigger loadReports for pagination changes
     loadReports();
   };
 
@@ -128,14 +104,12 @@ export default function ReportsPage() {
     router.push(`/reports/${id}`);
   };
 
-
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-gray-50">
         <Header />
 
         <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          {/* Page Header */}
           <div className="px-4 py-6 sm:px-0">
             <div className="flex justify-between items-center">
               <div>
@@ -154,9 +128,6 @@ export default function ReportsPage() {
             </div>
           </div>
 
-
-
-          {/* Filters */}
           <div className="px-4 sm:px-0">
             <ReportsFilter
               filters={filters}
@@ -164,7 +135,6 @@ export default function ReportsPage() {
             />
           </div>
 
-          {/* Success Message */}
           {successMessage && (
             <div className="px-4 sm:px-0 mb-6">
               <div className="rounded-md bg-green-50 p-4">
@@ -194,7 +164,6 @@ export default function ReportsPage() {
             </div>
           )}
 
-          {/* Error State */}
           {error && (
             <div className="px-4 sm:px-0 mb-6">
               <div className="rounded-md bg-red-50 p-4">
@@ -225,7 +194,6 @@ export default function ReportsPage() {
             </div>
           )}
 
-          {/* Reports Table */}
           <div className="px-4 sm:px-0">
             <ReportsTable
               reports={reports}
@@ -234,7 +202,6 @@ export default function ReportsPage() {
             />
           </div>
 
-          {/* Pagination */}
           {!isLoading && reports.length > 0 && (
             <div className="px-4 sm:px-0 mt-6">
               <Pagination
@@ -246,7 +213,6 @@ export default function ReportsPage() {
             </div>
           )}
         </main>
-
 
       </div>
     </ProtectedRoute>

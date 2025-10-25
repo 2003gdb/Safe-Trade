@@ -1,9 +1,4 @@
-/**
- * Catalog Utility Functions
- *
- * Utility functions for working with catalog data, transformations,
- * and legacy compatibility in the admin portal.
- */
+
 
 import { CatalogData, CatalogMaps } from '../types/catalog.types';
 import {
@@ -17,9 +12,8 @@ import {
 } from '../types/normalized.types';
 
 export class CatalogUtils {
-  /**
-   * Create efficient lookup maps from catalog data
-   */
+  
+
   static createLookupMaps(catalogs: CatalogData): CatalogMaps {
     return {
       attackTypeMap: new Map(catalogs.attackTypes.map(at => [at.id, at.name])),
@@ -31,9 +25,8 @@ export class CatalogUtils {
     };
   }
 
-  /**
-   * Get display name by ID and type
-   */
+  
+
   static getDisplayName(
     catalogs: CatalogData,
     type: 'attackTypes' | 'impacts' | 'statuses',
@@ -43,9 +36,8 @@ export class CatalogUtils {
     return item?.name || 'Desconocido';
   }
 
-  /**
-   * Get ID by name and type
-   */
+  
+
   static getId(
     catalogs: CatalogData,
     type: 'attackTypes' | 'impacts' | 'statuses',
@@ -55,9 +47,8 @@ export class CatalogUtils {
     return item?.id || null;
   }
 
-  /**
-   * Convert normalized report to legacy format for compatibility
-   */
+  
+
   static convertToLegacyReport(
     report: ReportWithDetails,
     catalogs: CatalogData
@@ -70,7 +61,7 @@ export class CatalogUtils {
       impact_level: report.impact_name || this.getDisplayName(catalogs, 'impacts', report.impact),
       description: report.description || '',
       attack_origin: report.attack_origin || '',
-      device_info: null, // Legacy field no longer used
+      device_info: null, 
       is_anonymous: report.is_anonymous,
       status: report.status_name || this.getDisplayName(catalogs, 'statuses', report.status),
       admin_notes: report.admin_note,
@@ -80,9 +71,8 @@ export class CatalogUtils {
     };
   }
 
-  /**
-   * Convert legacy report to normalized format
-   */
+  
+
   static convertFromLegacyReport(
     legacyReport: LegacyReport,
     catalogs: CatalogData
@@ -95,7 +85,7 @@ export class CatalogUtils {
       incident_date: legacyReport.incident_date,
       evidence_url: legacyReport.evidence_urls[0] || null,
       attack_origin: legacyReport.attack_origin,
-      sos_cont: null, // Legacy field mapping
+      sos_cont: null, 
       description: legacyReport.description,
       impact: this.getId(catalogs, 'impacts', legacyReport.impact_level) || 1,
       status: this.getId(catalogs, 'statuses', legacyReport.status) || 1,
@@ -105,9 +95,8 @@ export class CatalogUtils {
     };
   }
 
-  /**
-   * Enrich a normalized report with display names
-   */
+  
+
   static enrichReportWithNames(
     report: NormalizedReport,
     catalogs: CatalogData
@@ -120,9 +109,8 @@ export class CatalogUtils {
     };
   }
 
-  /**
-   * Convert legacy filter values to normalized IDs
-   */
+  
+
   static convertLegacyFilters(
     legacyFilters: Record<string, any>,
     catalogs: CatalogData
@@ -136,7 +124,7 @@ export class CatalogUtils {
       limit: legacyFilters.limit
     };
 
-    // Convert string values to IDs
+    
     if (legacyFilters.status && typeof legacyFilters.status === 'string') {
       normalized.status = this.getId(catalogs, 'statuses', legacyFilters.status);
     }
@@ -152,16 +140,15 @@ export class CatalogUtils {
     return normalized;
   }
 
-  /**
-   * Validate that all required catalog items exist
-   */
+  
+
   static validateCatalogCompleteness(catalogs: CatalogData): {
     isValid: boolean;
     missingItems: string[];
   } {
     const missingItems: string[] = [];
 
-    // Check for essential attack types
+    
     const requiredAttackTypes = ['email', 'SMS', 'whatsapp', 'llamada'];
     requiredAttackTypes.forEach(type => {
       if (!catalogs.attackTypes.find(at => at.name === type)) {
@@ -169,7 +156,7 @@ export class CatalogUtils {
       }
     });
 
-    // Check for essential impacts
+    
     const requiredImpacts = ['ninguno', 'robo_datos', 'robo_dinero'];
     requiredImpacts.forEach(impact => {
       if (!catalogs.impacts.find(i => i.name === impact)) {
@@ -177,7 +164,7 @@ export class CatalogUtils {
       }
     });
 
-    // Check for essential statuses
+    
     const requiredStatuses = ['nuevo', 'revisado', 'cerrado'];
     requiredStatuses.forEach(status => {
       if (!catalogs.statuses.find(s => s.name === status)) {
@@ -191,9 +178,8 @@ export class CatalogUtils {
     };
   }
 
-  /**
-   * Get user-friendly display names for catalog items
-   */
+  
+
   static getDisplayNames() {
     return {
       attackTypes: {
@@ -219,9 +205,8 @@ export class CatalogUtils {
     };
   }
 
-  /**
-   * Create default catalog structure for testing/fallback
-   */
+  
+
   static createDefaultCatalogs(): CatalogData {
     const now = new Date().toISOString();
 
@@ -249,9 +234,8 @@ export class CatalogUtils {
     };
   }
 
-  /**
-   * Format catalog data for analytics/reporting
-   */
+  
+
   static formatForAnalytics(catalogs: CatalogData) {
     return {
       summary: {
@@ -277,16 +261,14 @@ export class CatalogUtils {
     };
   }
 
-  /**
-   * Check if catalog data is fresh enough (not stale)
-   */
+  
+
   static isCatalogDataFresh(lastUpdated: number, maxAge: number = 5 * 60 * 1000): boolean {
     return (Date.now() - lastUpdated) < maxAge;
   }
 
-  /**
-   * Sort catalog items by usage frequency or alphabetically
-   */
+  
+
   static sortCatalogItems<T extends { id: number; name: string }>(
     items: T[],
     sortBy: 'alphabetical' | 'usage' = 'alphabetical',

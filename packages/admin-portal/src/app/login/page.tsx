@@ -15,14 +15,12 @@ export default function LoginPage() {
   const { login, isAuthenticated, isLoading, error, clearError } = useAuth();
   const router = useRouter();
 
-  // Redirect to dashboard when authenticated
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
       window.location.replace('/dashboard');
     }
   }, [isAuthenticated, isLoading]);
 
-  // Clear error when component unmounts or credentials change
   useEffect(() => {
     clearError();
   }, [credentials, clearError]);
@@ -34,7 +32,6 @@ export default function LoginPage() {
     try {
       await login(credentials);
     } catch (error) {
-      // Error is handled by the AuthContext
     } finally {
       setIsSubmitting(false);
     }

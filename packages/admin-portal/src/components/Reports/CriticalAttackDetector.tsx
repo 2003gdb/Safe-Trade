@@ -12,7 +12,7 @@ interface CriticalAttackPattern {
   rules: {
     impactLevel?: string[];
     attackType?: string[];
-    frequency?: number; // Reports per day
+    frequency?: number; 
     location?: string[];
     keywords?: string[];
   };
@@ -27,7 +27,7 @@ export default function CriticalAttackDetector({ reports, onCriticalDetected }: 
   const [detectedPatterns, setDetectedPatterns] = useState<CriticalAttackPattern[]>([]);
   const [criticalReports, setCriticalReports] = useState<(ReportSummary | SearchResult)[]>([]);
 
-  // Pattern definitions for critical attack detection
+  
   const patterns: CriticalAttackPattern[] = [
     {
       id: 'high_financial_impact',
@@ -45,7 +45,7 @@ export default function CriticalAttackDetector({ reports, onCriticalDetected }: 
       weight: 8,
       rules: {
         attackType: ['email'],
-        frequency: 5 // 5 or more reports per day
+        frequency: 5 
       }
     },
     {
@@ -65,7 +65,7 @@ export default function CriticalAttackDetector({ reports, onCriticalDetected }: 
       weight: 7,
       rules: {
         frequency: 4,
-        location: [] // Will be dynamically populated
+        location: [] 
       }
     },
     {
@@ -101,7 +101,7 @@ export default function CriticalAttackDetector({ reports, onCriticalDetected }: 
     const today = new Date();
     const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
 
-    // Filter reports from last 24 hours
+    
     const recentReports = reports.filter(report => {
       const reportDate = new Date(report.createdAt);
       return reportDate >= yesterday;
@@ -123,7 +123,7 @@ export default function CriticalAttackDetector({ reports, onCriticalDetected }: 
       }
     });
 
-    // Remove duplicates from critical reports
+    
     const uniqueCritical = critical.filter((report, index, self) =>
       index === self.findIndex(r => r.id === report.id)
     );
@@ -141,7 +141,7 @@ export default function CriticalAttackDetector({ reports, onCriticalDetected }: 
       let matches = 0;
       let totalRules = 0;
 
-      // Impact Level check
+      
       if (pattern.rules.impactLevel) {
         totalRules++;
         if (pattern.rules.impactLevel.includes(report.impactLevel)) {
@@ -149,7 +149,7 @@ export default function CriticalAttackDetector({ reports, onCriticalDetected }: 
         }
       }
 
-      // Attack Type check
+      
       if (pattern.rules.attackType) {
         totalRules++;
         if (pattern.rules.attackType.includes(report.attackType)) {
@@ -157,7 +157,7 @@ export default function CriticalAttackDetector({ reports, onCriticalDetected }: 
         }
       }
 
-      // Location check
+      
       if (pattern.rules.location && pattern.rules.location.length > 0) {
         totalRules++;
         const reportLocation = report.location.toLowerCase();
@@ -169,7 +169,7 @@ export default function CriticalAttackDetector({ reports, onCriticalDetected }: 
         }
       }
 
-      // Keywords check (if description is available in SearchResult)
+      
       if (pattern.rules.keywords && 'highlights' in report) {
         totalRules++;
         const searchResult = report as SearchResult;
@@ -185,26 +185,26 @@ export default function CriticalAttackDetector({ reports, onCriticalDetected }: 
         }
       }
 
-      // Return true if at least 50% of rules match
+      
       return totalRules > 0 && (matches / totalRules) >= 0.5;
     });
   };
 
   const validatePattern = (pattern: CriticalAttackPattern, matchingReports: (ReportSummary | SearchResult)[]) => {
-    // Frequency validation
+    
     if (pattern.rules.frequency) {
       if (matchingReports.length < pattern.rules.frequency) {
         return false;
       }
     }
 
-    // Geographic clustering validation
+    
     if (pattern.id === 'geographic_cluster') {
       const locationGroups = groupReportsByLocation(matchingReports);
       return Object.values(locationGroups).some(group => group.length >= (pattern.rules.frequency || 4));
     }
 
-    // Coordinated attack validation
+    
     if (pattern.id === 'coordinated_attack') {
       const attackTypes = new Set(matchingReports.map(r => r.attackType));
       return attackTypes.size >= 2 && matchingReports.length >= (pattern.rules.frequency || 3);
@@ -248,7 +248,7 @@ export default function CriticalAttackDetector({ reports, onCriticalDetected }: 
   return (
     <div className="bg-white border-l-4 border-red-400 shadow-lg rounded-md">
       <div className="p-4">
-        {/* Header */}
+        {}
         <div className="flex items-center mb-4">
           <div className="flex-shrink-0">
             <svg className="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -265,7 +265,7 @@ export default function CriticalAttackDetector({ reports, onCriticalDetected }: 
           </div>
         </div>
 
-        {/* Detected Patterns */}
+        {}
         {detectedPatterns.length > 0 && (
           <div className="mb-4">
             <h4 className="text-sm font-medium text-gray-900 mb-2">Patrones Detectados</h4>
@@ -295,7 +295,7 @@ export default function CriticalAttackDetector({ reports, onCriticalDetected }: 
           </div>
         )}
 
-        {/* Critical Reports Summary */}
+        {}
         {criticalReports.length > 0 && (
           <div className="mb-4">
             <h4 className="text-sm font-medium text-gray-900 mb-2">
@@ -330,7 +330,7 @@ export default function CriticalAttackDetector({ reports, onCriticalDetected }: 
           </div>
         )}
 
-        {/* Recommendations */}
+        {}
         <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
           <h4 className="text-sm font-medium text-blue-800 mb-2">Recomendaciones de Acción</h4>
           <ul className="text-sm text-blue-700 space-y-1">
@@ -344,7 +344,7 @@ export default function CriticalAttackDetector({ reports, onCriticalDetected }: 
           </ul>
         </div>
 
-        {/* Timestamp */}
+        {}
         <div className="mt-3 text-xs text-gray-500 text-right">
           Última actualización: {formatTimestamp(new Date())}
         </div>

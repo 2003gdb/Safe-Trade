@@ -43,7 +43,7 @@ export default function AdvancedSearchModal({
   const loadSearchHistory = async () => {
     try {
       const history = await adminAPIService.getSearchHistory();
-      setSearchHistory(history.slice(0, 10)); // Show only last 10
+      setSearchHistory(history.slice(0, 10)); 
     } catch (error) {
       console.error('Error loading search history:', error);
     }
@@ -97,7 +97,7 @@ export default function AdvancedSearchModal({
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
       <div className="relative top-20 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
-        {/* Header */}
+        {}
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-lg font-bold text-gray-900">
             {es.reports.search.title}
@@ -113,10 +113,10 @@ export default function AdvancedSearchModal({
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Search Form */}
+          {}
           <div className="lg:col-span-2">
             <div className="space-y-4">
-              {/* Query */}
+              {}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   {es.reports.search.placeholder}
@@ -130,9 +130,9 @@ export default function AdvancedSearchModal({
                 />
               </div>
 
-              {/* Filters Row 1 */}
+              {}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Status */}
+                {}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     {es.reports.filterByStatus}
@@ -150,7 +150,7 @@ export default function AdvancedSearchModal({
                   </select>
                 </div>
 
-                {/* Attack Type */}
+                {}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     {es.reports.filterByAttackType}
@@ -171,7 +171,7 @@ export default function AdvancedSearchModal({
                 </div>
               </div>
 
-              {/* Impact Level */}
+              {}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   {es.reports.search.impactLevel}
@@ -189,7 +189,7 @@ export default function AdvancedSearchModal({
                 </select>
               </div>
 
-              {/* Date Range */}
+              {}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   {es.reports.search.dateRange}
@@ -220,7 +220,7 @@ export default function AdvancedSearchModal({
                 </div>
               </div>
 
-              {/* Anonymous Filter */}
+              {}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Tipo de Usuario
@@ -261,9 +261,9 @@ export default function AdvancedSearchModal({
             </div>
           </div>
 
-          {/* Sidebar */}
+          {}
           <div className="space-y-6">
-            {/* Saved Searches */}
+            {}
             <div>
               <h4 className="text-sm font-medium text-gray-900 mb-3">
                 {es.reports.search.savedSearches}
@@ -287,7 +287,7 @@ export default function AdvancedSearchModal({
               )}
             </div>
 
-            {/* Search History */}
+            {}
             <div>
               <div className="flex justify-between items-center mb-3">
                 <h4 className="text-sm font-medium text-gray-900">
@@ -326,7 +326,7 @@ export default function AdvancedSearchModal({
           </div>
         </div>
 
-        {/* Footer */}
+        {}
         <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
           <div className="flex space-x-3">
             <button
@@ -359,7 +359,7 @@ export default function AdvancedSearchModal({
           </div>
         </div>
 
-        {/* Save Search Dialog */}
+        {}
         {showSaveDialog && (
           <div className="absolute inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full mx-4">

@@ -3,12 +3,12 @@ import { Module } from "@nestjs/common";
 import { ComunidadController } from "./comunidad.controller";
 import { ComunidadService } from "./comunidad.service";
 import { ComunidadRepository } from "./comunidad.repository";
-import { ReportesModule } from "src/reportes/reportes.module"; // Import to use ReportesService
+import { ReportesModule } from "src/reportes/reportes.module";
 
 @Module({
-    imports: [ReportesModule], // Import to reuse reportes functionality
+    imports: [ReportesModule],
     controllers: [ComunidadController],
     providers: [ComunidadService, ComunidadRepository],
-    exports: [ComunidadService], // Export for other modules if needed
+    exports: [ComunidadService],
 })
 export class ComunidadModule {}

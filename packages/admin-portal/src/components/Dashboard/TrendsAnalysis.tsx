@@ -21,17 +21,17 @@ export default function TrendsAnalysis({ weeklyData, monthlyData, isLoading }: T
     );
   }
 
-  // Prepare weekly data
+  
   const weeklyChartData = weeklyData.map(item => ({
     period: new Date(item.week_start).toLocaleDateString('es-ES', { month: 'short', day: 'numeric' }),
     reportes: item.count
-  })).reverse(); // Reverse to show chronological order
+  })).reverse(); 
 
-  // Prepare monthly data
+  
   const monthlyChartData = monthlyData.map(item => ({
     period: new Date(item.month + '-01').toLocaleDateString('es-ES', { year: 'numeric', month: 'short' }),
     reportes: item.count
-  })).reverse(); // Reverse to show chronological order
+  })).reverse(); 
 
   const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number }>; label?: string }) => {
     if (active && payload && payload.length) {
@@ -49,7 +49,7 @@ export default function TrendsAnalysis({ weeklyData, monthlyData, isLoading }: T
 
   return (
     <div className="space-y-6">
-      {/* Weekly Trends */}
+      {}
       <div className="bg-white/70 backdrop-blur-sm shadow border border-safetrade-blue/30 p-6">
         <h3 className="text-lg font-medium text-safetrade-dark mb-4">Tendencia Semanal (Últimas 8 Semanas)</h3>
         <div className="h-64">
@@ -78,7 +78,7 @@ export default function TrendsAnalysis({ weeklyData, monthlyData, isLoading }: T
         </div>
       </div>
 
-      {/* Monthly Trends */}
+      {}
       <div className="bg-white/70 backdrop-blur-sm shadow border border-safetrade-blue/30 p-6">
         <h3 className="text-lg font-medium text-safetrade-dark mb-4">Tendencia Mensual (Últimos 6 Meses)</h3>
         <div className="h-64">

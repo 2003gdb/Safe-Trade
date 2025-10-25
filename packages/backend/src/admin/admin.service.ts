@@ -92,11 +92,8 @@ export class AdminService {
         const page = parseInt(searchFilters.page || '1');
         const limit = parseInt(searchFilters.limit || '10');
 
-        // For now, use basic filtering with search query applied client-side
-        // In a real implementation, this would use database full-text search
         const reports = await this.adminRepository.getFilteredReports(searchFilters);
 
-        // Apply search query filtering
         let filteredReports = reports;
         if (searchFilters.q) {
             const query = searchFilters.q.toLowerCase();
@@ -108,7 +105,6 @@ export class AdminService {
             );
         }
 
-        // Apply additional filters
         if (searchFilters.impact_level) {
             filteredReports = filteredReports.filter((report: any) =>
                 report.impact_level === searchFilters.impact_level
@@ -128,7 +124,6 @@ export class AdminService {
             );
         }
 
-        // Add search highlighting and scoring
         const searchResults = filteredReports.map((report: any) => ({
             ...report,
             highlights: searchFilters.q ? {
@@ -138,7 +133,6 @@ export class AdminService {
             score: searchFilters.q ? this.calculateSearchScore(report, searchFilters.q) : undefined
         }));
 
-        // Pagination
         const startIndex = (page - 1) * limit;
         const endIndex = startIndex + limit;
         const paginatedResults = searchResults.slice(startIndex, endIndex);
@@ -172,21 +166,14 @@ export class AdminService {
         const rawReport = await this.adminRepository.getReportById(reportId);
         if (!rawReport) return null;
 
-        // Transform using centralized catalog mapping service
         return this.catalogMappingService.transformReportForAdmin(rawReport);
     }
 
-
-    // Admin Notes Management
     async getReportNotes(reportId: number) {
-        // For now, return empty array as notes table may not exist yet
-        // In real implementation, would query notes table
         return [];
     }
 
     async addReportNote(reportId: number, content: string, isTemplate: boolean = false, templateName?: string) {
-        // For now, return a mock note object
-        // In real implementation, would insert into notes table
         return {
             id: Date.now(),
             reportId,
@@ -201,8 +188,6 @@ export class AdminService {
     }
 
     async updateNote(noteId: number, content: string) {
-        // For now, return a mock updated note
-        // In real implementation, would update notes table
         return {
             id: noteId,
             reportId: 1,
@@ -216,8 +201,6 @@ export class AdminService {
     }
 
     async deleteNote(noteId: number) {
-        // For now, just return success
-        // In real implementation, would delete from notes table
         return true;
     }
 }

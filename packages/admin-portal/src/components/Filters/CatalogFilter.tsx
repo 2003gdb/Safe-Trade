@@ -1,9 +1,4 @@
-/**
- * CatalogFilter Component
- *
- * Reusable dropdown filter component that populates options from catalog data.
- * Supports attack types, impacts, and statuses with proper display names.
- */
+
 
 import React from 'react';
 import { useCatalogOptions } from '../../contexts/CatalogContext';
@@ -83,9 +78,6 @@ export function CatalogFilter({
   );
 }
 
-/**
- * Simplified CatalogSelect for inline usage without labels
- */
 export function CatalogSelect({
   type,
   value,
@@ -137,9 +129,6 @@ export function CatalogSelect({
   );
 }
 
-/**
- * Multi-select version for advanced filtering
- */
 interface CatalogMultiSelectProps extends Omit<CatalogFilterProps, 'value' | 'onChange'> {
   value: number[];
   onChange: (value: number[]) => void;

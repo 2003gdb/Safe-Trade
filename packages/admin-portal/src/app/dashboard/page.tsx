@@ -29,7 +29,7 @@ function DashboardContent() {
       setIsLoading(true);
       setError(null);
 
-      // Load enhanced metrics - AdminAPIService will now enrich data with catalog names
+      
       const enhancedData = await adminAPIService.getEnhancedDashboardMetrics();
       setEnhancedMetrics(enhancedData);
     } catch (error) {
@@ -39,7 +39,7 @@ function DashboardContent() {
     }
   };
 
-  // Show catalog loading state
+  
   if (catalogLoading) {
     return (
       <ProtectedRoute>
@@ -58,7 +58,7 @@ function DashboardContent() {
     );
   }
 
-  // Show catalog error state
+  
   if (catalogError) {
     return (
       <ProtectedRoute>
@@ -91,7 +91,7 @@ function DashboardContent() {
         <Header />
 
         <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          {/* Page Header */}
+          {}
           <div className="px-4 py-6 sm:px-0">
             <div className="flex items-start justify-between">
               <div>
@@ -114,7 +114,7 @@ function DashboardContent() {
             </div>
           </div>
 
-          {/* Error State */}
+          {}
           {error && (
             <div className="px-4 sm:px-0 mb-6">
               <div className="rounded-md bg-red-50 p-4">
@@ -145,7 +145,7 @@ function DashboardContent() {
             </div>
           )}
 
-          {/* Enhanced Metrics Grid */}
+          {}
           <div className="px-4 sm:px-0">
             <EnhancedMetricsCards
               metrics={enhancedMetrics}
@@ -153,7 +153,7 @@ function DashboardContent() {
             />
           </div>
 
-          {/* Charts Grid */}
+          {}
           <div className="px-4 sm:px-0 mt-8">
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               <StatusChart
@@ -168,7 +168,7 @@ function DashboardContent() {
             </div>
           </div>
 
-          {/* Attack Types Chart */}
+          {}
           <div className="px-4 sm:px-0 mt-8">
             <AttackTypesChart
               data={enhancedMetrics?.attack_types || []}
@@ -176,7 +176,7 @@ function DashboardContent() {
             />
           </div>
 
-          {/* Trends Analysis */}
+          {}
           <div className="px-4 sm:px-0 mt-8">
             <TrendsAnalysis
               weeklyData={enhancedMetrics?.weekly_trends || []}

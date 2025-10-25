@@ -1,4 +1,4 @@
-// Admin Portal TypeScript Interfaces
+
 
 export interface AdminUser {
   id: number;
@@ -134,7 +134,6 @@ export interface UpdateStatusRequest {
   adminNotes?: string;
 }
 
-// Advanced Search Types
 export interface SearchFilters {
   query?: string;
   status?: string;
@@ -171,8 +170,6 @@ export interface SearchHistory {
   resultCount: number;
 }
 
-
-// Admin Notes Types
 export interface AdminNote {
   id: number;
   reportId: number;

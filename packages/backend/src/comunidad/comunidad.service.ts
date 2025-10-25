@@ -23,8 +23,8 @@ export class ComunidadService {
         return {
             period: period,
             community_stats: communityStats,
-            attack_trends: attackTrends, // Already has catalog names from JOIN
-            impact_trends: impactTrends, // Already has catalog names from JOIN
+            attack_trends: attackTrends,
+            impact_trends: impactTrends,
             time_trends: timeTrends,
             summary: this.generateTrendsSummary(attackTrends, impactTrends, communityStats as unknown as Record<string, unknown>)
         };
@@ -40,7 +40,7 @@ export class ComunidadService {
 
         return {
             community_overview: stats,
-            recent_trends: recentTrends, // Already has catalog names from JOIN
+            recent_trends: recentTrends,
             suspicious_origins: topOrigins,
             insights: this.generateCommunityInsights(stats as unknown as Record<string, unknown>, recentTrends)
         };
@@ -87,8 +87,8 @@ export class ComunidadService {
         const topImpact = impactTrends[0];
 
         return {
-            main_threat: topAttack ? this.translateAttackType(topAttack.attack_type) : 'N/A', // Translate for display
-            main_impact: topImpact ? this.translateImpactLevel(topImpact.attack_type) : 'N/A', // Translate for display
+            main_threat: topAttack ? this.translateAttackType(topAttack.attack_type) : 'N/A',
+            main_impact: topImpact ? this.translateImpactLevel(topImpact.attack_type) : 'N/A',
             total_reports: stats.total_reports as number,
             community_alert_level: this.calculateAlertLevel(stats, attackTrends),
             key_insight: this.generateKeyInsight(attackTrends, impactTrends, stats)

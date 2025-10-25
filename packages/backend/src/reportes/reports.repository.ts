@@ -335,7 +335,6 @@ export class ReportsRepository {
     };
   }
 
-  // Catalog operations
   async getAllCatalogData(): Promise<{
     attackTypes: { id: number; name: string }[];
     impacts: { id: number; name: string }[];

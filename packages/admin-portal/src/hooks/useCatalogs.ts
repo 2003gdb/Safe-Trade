@@ -1,9 +1,4 @@
-/**
- * useCatalogs Hook
- *
- * React hook for loading and managing catalog data in components.
- * Provides cached catalog data with loading and error states.
- */
+
 
 import { useState, useEffect } from 'react';
 import catalogService from '../services/CatalogService';
@@ -71,9 +66,6 @@ export const useCatalogs = (): UseCatalogsResult => {
   };
 };
 
-/**
- * Hook for getting dropdown options from catalogs
- */
 export const useCatalogOptions = () => {
   const { catalogs, loading, error } = useCatalogs();
 
@@ -98,9 +90,6 @@ export const useCatalogOptions = () => {
   };
 };
 
-/**
- * Hook for legacy conversion utilities
- */
 export const useLegacyConversion = () => {
   const convertLegacyAttackType = async (legacyValue: string): Promise<number | null> => {
     return catalogService.convertLegacyAttackType(legacyValue);

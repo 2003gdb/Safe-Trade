@@ -1,11 +1,5 @@
-/**
- * Admin Portal Types - Updated for Normalized Database Schema
- *
- * These types reflect the new normalized database structure
- * and provide backward compatibility with existing admin portal code.
- */
 
-// ========== Catalog Types ==========
+
 export interface AttackType {
   id: number;
   name: string;
@@ -24,45 +18,40 @@ export interface Status {
   created_at: string;
 }
 
-// ========== Updated Report Types ==========
 export interface NormalizedReport {
   id: number;
   user_id: number | null;
   is_anonymous: boolean;
-  attack_type: number; // Foreign key ID
-  incident_date: string; // ISO timestamp
-  evidence_url: string | null; // Renamed from suspicious_url
+  attack_type: number; 
+  incident_date: string; 
+  evidence_url: string | null; 
   attack_origin: string | null;
-  sos_cont: string | null; // Renamed from message_content
+  sos_cont: string | null; 
   description: string | null;
-  impact: number; // Foreign key ID
-  status: number; // Foreign key ID
-  admin_note: string | null; // Renamed from admin_notes
+  impact: number; 
+  status: number; 
+  admin_note: string | null; 
   created_at: string;
   updated_at: string;
 }
 
 export interface ReportWithDetails extends NormalizedReport {
-  // Joined data from catalog tables
+  
   attack_type_name: string;
   impact_name: string;
   status_name: string;
 
-  // Joined user data
+  
   user_email?: string;
   user_name?: string;
 }
 
-// ReportAttachment interface removed - using evidence_url column instead
-
-// ========== Legacy Compatibility Types ==========
-// These help maintain backward compatibility with existing admin portal components
 export interface LegacyReportSummary {
   id: number;
-  attack_type: string; // Display name from catalog
+  attack_type: string; 
   incident_date: string;
-  impact_level: string; // Display name from catalog
-  status: string; // Display name from catalog
+  impact_level: string; 
+  status: string; 
   is_anonymous: boolean;
   user_id: number | null;
   attack_origin: string;
@@ -72,23 +61,22 @@ export interface LegacyReportSummary {
 export interface LegacyReport {
   id: number;
   user_id: number | null;
-  attack_type: string; // Display name
+  attack_type: string; 
   incident_date: string;
-  impact_level: string; // Display name
+  impact_level: string; 
   description: string;
   attack_origin: string;
-  device_info: string | null; // Legacy field
+  device_info: string | null; 
   is_anonymous: boolean;
-  status: string; // Display name
-  admin_notes: string | null; // Legacy field name
-  evidence_urls: string[]; // Array format for compatibility
+  status: string; 
+  admin_notes: string | null; 
+  evidence_urls: string[]; 
   created_at: string;
   updated_at: string;
 }
 
-// ========== Admin Portal Specific Types ==========
 export interface AdminPortalFilters {
-  status?: number; // Now uses foreign key IDs
+  status?: number; 
   attack_type?: number;
   impact?: number;
   is_anonymous?: boolean;
@@ -104,7 +92,6 @@ export interface CatalogData {
   statuses: Status[];
 }
 
-// ========== Dashboard Metrics (Updated) ==========
 export interface NormalizedDashboardMetrics {
   total_reports: number;
   reports_today: number;
@@ -144,30 +131,28 @@ export interface NormalizedImpactDistribution {
   percentage: number;
 }
 
-// ========== Update Request Types ==========
 export interface UpdateReportRequest {
-  attack_type?: number; // Foreign key ID
+  attack_type?: number; 
   incident_date?: string;
   evidence_url?: string;
   attack_origin?: string;
   sos_cont?: string;
   description?: string;
-  impact?: number; // Foreign key ID
-  status?: number; // Foreign key ID
+  impact?: number; 
+  status?: number; 
   admin_note?: string;
 }
 
 export interface UpdateStatusRequest {
-  status: number; // Foreign key ID instead of string
+  status: number; 
   admin_note?: string;
 }
 
-// ========== Search and Filter Types (Updated) ==========
 export interface NormalizedSearchFilters {
   query?: string;
-  status?: number; // Foreign key ID
-  attack_type?: number; // Foreign key ID
-  impact?: number; // Foreign key ID
+  status?: number; 
+  attack_type?: number; 
+  impact?: number; 
   is_anonymous?: boolean;
   date_from?: string;
   date_to?: string;
@@ -175,25 +160,20 @@ export interface NormalizedSearchFilters {
   limit?: number;
 }
 
-// ========== Data Transformation Utilities ==========
 export interface ReportTransformer {
-  /**
-   * Convert normalized report to legacy format for backward compatibility
-   */
+  
+
   toLegacyReport(report: ReportWithDetails): LegacyReport;
 
-  /**
-   * Convert normalized report summary to legacy format
-   */
+  
+
   toLegacyReportSummary(report: ReportWithDetails): LegacyReportSummary;
 
-  /**
-   * Convert legacy filters to normalized filters
-   */
+  
+
   fromLegacyFilters(filters: any): NormalizedSearchFilters;
 }
 
-// ========== Constants for Mapping ==========
 export const LEGACY_ATTACK_TYPES = [
   'email',
   'SMS',

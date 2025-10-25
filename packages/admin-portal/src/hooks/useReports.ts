@@ -1,9 +1,4 @@
-/**
- * useReports Hook
- *
- * React hook for loading reports with catalog integration.
- * Handles filtering, pagination, and enrichment with catalog names.
- */
+
 
 import { useState, useEffect } from 'react';
 import { adminAPIService } from '../services/AdminAPIService';
@@ -12,7 +7,7 @@ import { ReportWithDetails, AdminPortalFilters } from '../types/normalized.types
 import { PaginatedResponse, ReportSummary } from '../types';
 
 export interface UseReportsFilters extends AdminPortalFilters {
-  // Additional filters specific to the hook
+  
   query?: string;
 }
 
@@ -40,12 +35,12 @@ export const useReports = (initialFilters: UseReportsFilters = {}): UseReportsRe
       setLoading(true);
       setError(null);
 
-      // Wait for catalogs to load before fetching reports
+      
       if (catalogsLoading || !catalogs || !maps) {
         return;
       }
 
-      // Convert filters for API call
+      
       const apiFilters = {
         page: filters.page || 1,
         limit: filters.limit || 10,
@@ -58,25 +53,25 @@ export const useReports = (initialFilters: UseReportsFilters = {}): UseReportsRe
 
       const response: PaginatedResponse<ReportSummary> = await adminAPIService.getReports(apiFilters);
 
-      // Enrich reports with catalog names if they don't already have them
+      
       const enrichedReports: ReportWithDetails[] = response.data.map((report: ReportSummary) => {
-        // If the report already has enriched data (attack_type_name, etc.), use it
-        // Otherwise, enrich it using our catalog maps
+        
+        
         const enriched: ReportWithDetails = {
           id: report.id,
           user_id: report.userId || null,
           is_anonymous: report.isAnonymous,
           attack_type: getAttackTypeId(report.attackType, maps),
           incident_date: report.incidentDate,
-          evidence_url: null, // Not provided in summary
+          evidence_url: null, 
           attack_origin: report.location || '',
-          sos_cont: null, // Not provided in summary
-          description: null, // Not provided in summary
+          sos_cont: null, 
+          description: null, 
           impact: getImpactId(report.impactLevel, maps),
           status: getStatusId(report.status, maps),
-          admin_note: null, // Not provided in summary
+          admin_note: null, 
           created_at: report.createdAt,
-          updated_at: report.createdAt, // Use createdAt as fallback
+          updated_at: report.createdAt, 
           attack_type_name: report.attackType,
           impact_name: report.impactLevel,
           status_name: report.status,
@@ -97,7 +92,7 @@ export const useReports = (initialFilters: UseReportsFilters = {}): UseReportsRe
     }
   };
 
-  // Helper functions to get IDs from catalog maps
+  
   const getAttackTypeId = (name: string, catalogMaps: any): number => {
     return catalogMaps.attackTypeNameMap.get(name) || 0;
   };
@@ -112,7 +107,7 @@ export const useReports = (initialFilters: UseReportsFilters = {}): UseReportsRe
 
   useEffect(() => {
     loadReports();
-  }, [filters, catalogs, catalogsLoading]); // Re-run when filters or catalogs change
+  }, [filters, catalogs, catalogsLoading]); 
 
   const refetch = async () => {
     await loadReports();
@@ -133,9 +128,6 @@ export const useReports = (initialFilters: UseReportsFilters = {}): UseReportsRe
   };
 };
 
-/**
- * Hook for loading a single report by ID with catalog enrichment
- */
 export const useReport = (reportId: number) => {
   const [report, setReport] = useState<ReportWithDetails | null>(null);
   const [loading, setLoading] = useState(true);
@@ -154,8 +146,8 @@ export const useReport = (reportId: number) => {
 
       const reportData = await adminAPIService.getReportById(reportId);
 
-      // If the report comes pre-enriched, use it as-is
-      // Otherwise, enrich it with catalog data
+      
+      
       const enrichedReport: ReportWithDetails = {
         ...reportData,
         attack_type_name: reportData.attackType || maps.attackTypeMap.get(reportData.id) || 'Desconocido',
@@ -188,9 +180,6 @@ export const useReport = (reportId: number) => {
   };
 };
 
-/**
- * Hook for report statistics with catalog integration
- */
 export const useReportStats = () => {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -209,7 +198,7 @@ export const useReportStats = () => {
 
       const enhancedMetrics = await adminAPIService.getEnhancedDashboardMetrics();
 
-      // Enrich stats with catalog names if needed
+      
       const enrichedStats = {
         ...enhancedMetrics,
         attack_types: enhancedMetrics.attack_types?.map((item: any) => ({

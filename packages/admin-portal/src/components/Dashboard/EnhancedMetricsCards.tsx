@@ -20,7 +20,7 @@ export default function EnhancedMetricsCards({ metrics, isLoading }: EnhancedMet
 
   return (
     <div className="space-y-6">
-      {/* Main Metrics */}
+      {}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <MetricsCard
           title="Total de Reportes"
@@ -67,7 +67,7 @@ export default function EnhancedMetricsCards({ metrics, isLoading }: EnhancedMet
         />
       </div>
 
-      {/* Status Metrics */}
+      {}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <MetricsCard
           title="Reportes Críticos"
@@ -114,7 +114,7 @@ export default function EnhancedMetricsCards({ metrics, isLoading }: EnhancedMet
         />
       </div>
 
-      {/* Anonymous vs Identified */}
+      {}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <MetricsCard
           title="Reportes Anónimos"

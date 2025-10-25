@@ -14,7 +14,7 @@ export default function Header() {
     <header className="bg-white/70 backdrop-blur-sm shadow-sm border-b border-safetrade-blue/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo and Title */}
+          {}
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <div className="h-8 w-8 bg-safetrade-orange flex items-center justify-center">
@@ -30,7 +30,7 @@ export default function Header() {
             </div>
           </div>
 
-          {/* Navigation Links */}
+          {}
           <nav className="hidden md:flex space-x-8">
             <a
               href="/dashboard"
@@ -46,7 +46,7 @@ export default function Header() {
             </a>
           </nav>
 
-          {/* User Menu */}
+          {}
           <div className="flex items-center space-x-4">
             <button
               onClick={handleLogout}
@@ -58,7 +58,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
+      {}
       <div className="md:hidden border-t border-safetrade-blue/30 bg-white/50">
         <div className="px-2 py-3 space-y-1">
           <a

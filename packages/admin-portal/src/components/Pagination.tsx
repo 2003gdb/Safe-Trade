@@ -71,7 +71,7 @@ export default function Pagination({ currentPage, totalPages, totalResults, onPa
 
         <div>
           <nav className="relative z-0 inline-flex shadow-sm -space-x-px" aria-label="Pagination">
-            {/* Previous Button */}
+            {}
             <button
               onClick={() => onPageChange(currentPage - 1)}
               disabled={currentPage === 1}
@@ -83,7 +83,7 @@ export default function Pagination({ currentPage, totalPages, totalResults, onPa
               </svg>
             </button>
 
-            {/* Page Numbers */}
+            {}
             {generatePageNumbers().map((page, index) => (
               <span key={index}>
                 {page === '...' ? (
@@ -105,7 +105,7 @@ export default function Pagination({ currentPage, totalPages, totalResults, onPa
               </span>
             ))}
 
-            {/* Next Button */}
+            {}
             <button
               onClick={() => onPageChange(currentPage + 1)}
               disabled={currentPage === totalPages}

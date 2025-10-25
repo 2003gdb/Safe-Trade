@@ -190,42 +190,34 @@ export class AdminRepository {
     }
 
     async getEnhancedDashboardStats(): Promise<EnhancedDashboardStats> {
-        // Get basic counts
         const totalSql = `SELECT COUNT(*) as count FROM reports`;
         const [totalRows] = await this.db.getPool().query(totalSql);
         const totalResult = totalRows as { count: number }[];
 
-        // Get reports today
         const todaySql = `SELECT COUNT(*) as count FROM reports WHERE DATE(created_at) = CURDATE()`;
         const [todayRows] = await this.db.getPool().query(todaySql);
         const todayResult = todayRows as { count: number }[];
 
-        // Get reports this week
         const weekSql = `SELECT COUNT(*) as count FROM reports WHERE YEARWEEK(created_at) = YEARWEEK(NOW())`;
         const [weekRows] = await this.db.getPool().query(weekSql);
         const weekResult = weekRows as { count: number }[];
 
-        // Get reports this month
         const monthSql = `SELECT COUNT(*) as count FROM reports WHERE YEAR(created_at) = YEAR(NOW()) AND MONTH(created_at) = MONTH(NOW())`;
         const [monthRows] = await this.db.getPool().query(monthSql);
         const monthResult = monthRows as { count: number }[];
 
-        // Get critical reports
         const criticalSql = `SELECT COUNT(*) as count FROM reports WHERE impact IN (2, 3, 4)`;
         const [criticalRows] = await this.db.getPool().query(criticalSql);
         const criticalResult = criticalRows as { count: number }[];
 
-        // Get pending reports
         const pendingSql = `SELECT COUNT(*) as count FROM reports WHERE status = 1`;
         const [pendingRows] = await this.db.getPool().query(pendingSql);
         const pendingResult = pendingRows as { count: number }[];
 
-        // Get resolved reports
         const resolvedSql = `SELECT COUNT(*) as count FROM reports WHERE status = 4`;
         const [resolvedRows] = await this.db.getPool().query(resolvedSql);
         const resolvedResult = resolvedRows as { count: number }[];
 
-        // Get anonymous vs identified reports
         const anonymousSql = `SELECT COUNT(*) as count FROM reports WHERE is_anonymous = true`;
         const [anonymousRows] = await this.db.getPool().query(anonymousSql);
         const anonymousResult = anonymousRows as { count: number }[];
@@ -234,7 +226,6 @@ export class AdminRepository {
         const [identifiedRows] = await this.db.getPool().query(identifiedSql);
         const identifiedResult = identifiedRows as { count: number }[];
 
-        // Get status distribution with names from catalog
         const statusSql = `
             SELECT
                 r.status as status_id,
@@ -255,7 +246,6 @@ export class AdminRepository {
             percentage: totalReports > 0 ? Math.round((row.count / totalReports) * 100) : 0
         }));
 
-        // Get attack types distribution with names from catalog
         const attackTypesSql = `
             SELECT
                 r.attack_type as attack_type_id,
@@ -276,7 +266,6 @@ export class AdminRepository {
             percentage: totalReports > 0 ? Math.round((row.count / totalReports) * 100) : 0
         }));
 
-        // Get impact distribution with names from catalog
         const impactSql = `
             SELECT
                 r.impact as impact_id,
@@ -296,7 +285,6 @@ export class AdminRepository {
             percentage: totalReports > 0 ? Math.round((row.count / totalReports) * 100) : 0
         }));
 
-        // Get weekly trends (last 8 weeks)
         const weeklyTrendsSql = `
             SELECT
                 DATE(DATE_SUB(created_at, INTERVAL WEEKDAY(created_at) DAY)) as week_start,
@@ -309,7 +297,6 @@ export class AdminRepository {
         const [weeklyRows] = await this.db.getPool().query(weeklyTrendsSql);
         const weeklyTrends = weeklyRows as { week_start: string; count: number }[];
 
-        // Get monthly trends (last 6 months)
         const monthlyTrendsSql = `
             SELECT
                 DATE_FORMAT(created_at, '%Y-%m') as month,
@@ -322,7 +309,6 @@ export class AdminRepository {
         const [monthlyRows] = await this.db.getPool().query(monthlyTrendsSql);
         const monthlyTrends = monthlyRows as { month: string; count: number }[];
 
-        // Calculate response times (simplified)
         const responseTimesSql = `
             SELECT
                 AVG(DATEDIFF(updated_at, created_at)) as avg_resolution_time
@@ -349,7 +335,7 @@ export class AdminRepository {
             monthly_trends: monthlyTrends,
             response_times: {
                 avg_resolution_time: responseResult[0]?.avg_resolution_time || 0,
-                avg_first_response_time: 0 // Simplified for now
+                avg_first_response_time: 0
             }
         };
     }

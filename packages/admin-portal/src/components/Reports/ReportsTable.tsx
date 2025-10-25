@@ -54,7 +54,6 @@ export default function ReportsTable({
     }
   };
 
-
   if (isLoading) {
     return (
       <div className="bg-white shadow overflow-hidden rounded-md">
